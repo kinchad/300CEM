@@ -1,3 +1,25 @@
 <resources>
     <string name="app_name">Assignment</string>
+    <string name="loginName">Login Name</string>
+    <string name="password">Password</string>
+    <string name="btnLogin">Login</string>
+    <string name="title_activity_home_page">homePage</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string-array name="currencyRates">
+        <item>EUR/USD</item>
+        <item>Bitcoin</item>
+        <item>GBP/USD</item>
+        <item>USD/JPY</item>
+        <item>USD/CHF</item>
+        <item>USD/CAD</item>
+        <item>AUD/USD</item>
+        <item>USD/CNY</item>
+    </string-array>
+
 </resources>
