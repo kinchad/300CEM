@@ -12,10 +12,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 public class homePage extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    private ListView lvCurrency;
+    private String[] currencyRates;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,6 +44,10 @@ public class homePage extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        lvCurrency = (ListView)findViewById(R.id.lvCurrency);
+        currencyRates = getResources().getStringArray(R.array.currencyRates);
+        ArrayAdapter adapter = new ArrayAdapter(this,android.R.layout.simple_list_item_1,currencyRates);
     }
 
     @Override
