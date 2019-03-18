@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".converter">
+
+    <TextView
+        android:id="@+id/tvTarget"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:text="USD"
+        android:textSize="32dp" />
+
+    <TextView
+        android:id="@+id/colon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@id/tvTarget"
+        android:text=":"
+        android:textSize="32dp" />
+
+    <TextView
+        android:id="@+id/tvBase"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_toRightOf="@id/colon"
+        android:text="HKD"
+        android:textSize="32dp" />
+
+    <EditText
+        android:id="@+id/etTarget"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvTarget"
+        android:ems="10"
+        android:inputType="number"
+        android:text="Target"
+        android:layout_marginHorizontal="20dp"/>
+
+    <TextView
+        android:id="@+id/colon2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_below="@id/colon"
+        android:layout_toRightOf="@id/etTarget"
+        android:text=":"
+        android:textSize="32dp" />
+
+    <EditText
+        android:id="@+id/etBase"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvBase"
+        android:layout_toRightOf="@id/etTarget"
+        android:ems="10"
+        android:inputType="number|textPersonName"
+        android:text="Base"
+        android:layout_marginHorizontal="20dp"/>
+
+</RelativeLayout>
