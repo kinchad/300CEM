@@ -14,9 +14,7 @@ import android.widget.TextView;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
-
 import org.w3c.dom.Text;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
@@ -39,7 +37,6 @@ public class recommendCur extends AppCompatActivity {
         tvLocation = (TextView)findViewById(R.id.tvLocation);
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
-
         // check permission
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -55,15 +52,20 @@ public class recommendCur extends AppCompatActivity {
                 if (location != null) {
                     wayLatitude = location.getLatitude();
                     wayLongitude = location.getLongitude();
-                    //tvLocation.setText(String.format(Locale.CHINESE, "%s -- %s", wayLatitude, wayLongitude));
                     Log.d(TAG,"inside function:"+String.valueOf(wayLongitude));
 
                     geocoder = new Geocoder(recommendCur.this,Locale.TRADITIONAL_CHINESE);
-                    //geocoder = new Geocoder(this,Locale.getDefault());
                     try {
                         tvLocation.setText(String.valueOf(wayLatitude)+String.valueOf(wayLongitude));
                         addresses = geocoder.getFromLocation(wayLatitude, wayLongitude, 1);
                         String address = addresses.get(0).getAddressLine(0);
+                        String country = addresses.get(0).getCountryName();
+                        String area = addresses.get(0).getAdminArea();
+                        String locality = addresses.get(0).getLocality();
+                        String street = addresses.get(0).getThoroughfare();
+                        String streetNumber = addresses.get(0).getFeatureName();
+                        String postalCode = addresses.get(0).getPostalCode();
+
                         tvLocation.setText(address);
                     }catch (IOException e){
                         e.printStackTrace();
