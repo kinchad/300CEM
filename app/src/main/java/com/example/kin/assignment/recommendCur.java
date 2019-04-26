@@ -42,9 +42,7 @@ public class recommendCur extends AppCompatActivity {
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // reuqest for permission
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},locationRequestCode);
-        } else {
-            // already permission granted
-        }
+        } else {  } // already permission granted
         fusedLocationClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
             @Override
             public void onSuccess(Location location) {
@@ -56,7 +54,6 @@ public class recommendCur extends AppCompatActivity {
 
                     geocoder = new Geocoder(recommendCur.this,Locale.TRADITIONAL_CHINESE);
                     try {
-                        tvLocation.setText(String.valueOf(wayLatitude)+String.valueOf(wayLongitude));
                         addresses = geocoder.getFromLocation(wayLatitude, wayLongitude, 1);
                         String address = addresses.get(0).getAddressLine(0);
                         String country = addresses.get(0).getCountryName();
@@ -66,6 +63,7 @@ public class recommendCur extends AppCompatActivity {
                         String streetNumber = addresses.get(0).getFeatureName();
                         String postalCode = addresses.get(0).getPostalCode();
 
+                        //tvLocation.setText(String.valueOf(wayLatitude)+String.valueOf(wayLongitude));
                         tvLocation.setText(address);
                     }catch (IOException e){
                         e.printStackTrace();
@@ -73,8 +71,5 @@ public class recommendCur extends AppCompatActivity {
                 }
             }
         });
-
-
-
     }
 }
