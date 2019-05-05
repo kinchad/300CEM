@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Assignment</string>
-    <string name="loginName">登入名稱</string>
+    <string name="loginID">登入ID</string>
     <string name="password">密碼</string>
+    <string name="userName">用戶名稱</string>
     <string name="btnLogin">登入</string>
+    <string name="btnRegister">註冊</string>
 </resources>

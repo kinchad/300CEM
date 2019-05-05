@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.kin.assignment">
 
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -13,7 +13,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".recommendCur"></activity>
+        <activity android:name=".register"></activity>
+        <activity android:name=".recommendCur" />
         <activity android:name=".converter" />
         <activity
             android:name=".homePage"
@@ -27,4 +28,5 @@
             </intent-filter>
         </activity>
     </application>
+
 </manifest>

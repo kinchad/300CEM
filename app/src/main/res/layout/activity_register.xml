@@ -7,6 +7,15 @@
     android:orientation="horizontal"
     tools:context=".login">
 
+    <TextView
+        android:id="@+id/tvTitle"
+        android:text="@string/btnRegister"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:layout_centerHorizontal="true"
+        android:layout_centerInParent="true" />
+
     <EditText
         android:id="@+id/etUserID"
         android:layout_width="wrap_content"
@@ -14,6 +23,7 @@
         android:ems="10"
         android:hint="@string/loginID"
         android:inputType="textPersonName"
+        android:layout_below="@+id/tvTitle"
         android:layout_centerInParent="true"/>
 
     <EditText
@@ -27,21 +37,22 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"/>
 
-    <Button
-        android:id="@+id/btnLogin"
+    <EditText
+        android:id="@+id/etUserName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/btnLogin"
+        android:ems="10"
+        android:hint="@string/userName"
+        android:inputType="textPersonName"
         android:layout_below="@+id/etPassword"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"/>
+        android:layout_centerInParent="true"/>
 
     <Button
         android:id="@+id/btnRegister"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/btnRegister"
-        android:layout_below="@+id/btnLogin"
+        android:layout_below="@+id/etUserName"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"/>
 
