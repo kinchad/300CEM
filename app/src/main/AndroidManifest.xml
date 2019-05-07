@@ -13,7 +13,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".register"></activity>
+        <activity android:name=".currencyDetail"></activity>
+        <activity android:name=".register" />
         <activity android:name=".recommendCur" />
         <activity android:name=".converter" />
         <activity

@@ -15,8 +15,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -47,10 +51,10 @@ public class homePage extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -58,22 +62,33 @@ public class homePage extends AppCompatActivity
                         .setAction("Action", null).show();
             }
         });
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         new httpClient().execute();
 
-        lvCurrency = (ListView)findViewById(R.id.lvCurrency);
-        currencyRates = getResources().getStringArray(R.array.currencyRates);
-        ArrayAdapter adapter = new ArrayAdapter(this,android.R.layout.simple_list_item_1,stringArray);
-        lvCurrency.setAdapter(adapter);
+        lvCurrency = findViewById(R.id.lvCurrency);
+        //currencyRates = getResources().getStringArray(R.array.currencyRates);
+        //ArrayAdapter adapter = new ArrayAdapter(this,android.R.layout.simple_list_item_1,currencyRates);
+
+        Log.e("check log:","check point a");
+        lvCurrency.setOnItemClickListener(
+            new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Toast.makeText(getBaseContext(), stringArray.get(position)+" Item clicked!", Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent(getBaseContext(),currencyDetail.class);
+                    intent.putExtra("currencyName",stringArray.get(position));
+                    startActivity(intent);
+                }
+            }
+        );
     }
     @Override
     public void onBackPressed() {
@@ -129,26 +144,26 @@ public class homePage extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-    class httpClient extends AsyncTask<Void, Void, Void> {
-        protected Void doInBackground(Void... params) {
-            String urlString = "http://10.112.160.67:7777/getLatestCurrency/";
+    class httpClient extends AsyncTask<Void, Void, ArrayList<String>> {
+        protected ArrayList<String> doInBackground(Void... params) {
+            Log.e("httpClient:","background service is running...");
+            String urlString = "http://10.112.160.105:7777/getLatestCurrency/";
             HttpURLConnection connection = null;
             try {
-                // 初始化 URL
+                // create URL & connection
                 URL url = new URL(urlString);
-                // 取得連線物件
                 connection = (HttpURLConnection) url.openConnection();
-                // 設定 request timeout
+                // set request timeout
                 connection.setReadTimeout(1500);
                 connection.setConnectTimeout(1500);
-                // 模擬 Chrome 的 user agent, 因為手機的網頁內容較不完整
+                // simulate Chrome's user agent, mobile browser may have compatible problems
                 connection.addRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.71 Safari/537.36");
-                // 設定開啟自動轉址
+                // set auto-redirect
                 connection.setInstanceFollowRedirects(true);
 
-                // 若要求回傳 200 OK 表示成功取得網頁內容
+                //return 200 -> request successful
                 if( connection.getResponseCode() == HttpsURLConnection.HTTP_OK ){
-                    // 讀取網頁內容
+                    // read the website
                     InputStream inputStream     = connection.getInputStream();
                     BufferedReader bufferedReader  = new BufferedReader( new InputStreamReader(inputStream) );
 
@@ -162,47 +177,49 @@ public class homePage extends AppCompatActivity
                     bufferedReader.close();
                     inputStream.close();
 
-                    // 網頁內容字串
+                    // get the string from website
                     responseString = stringBuffer.toString();
                     //Log.e("myLog",responseString);
 
-                    try{
-                        jsonArray = new JSONArray(responseString);
-                        //Log.e("myLog",jsonArray.toString());
+                   runOnUiThread(new Runnable() {
+                        public void run() {
+                            try{
+                                jsonArray = new JSONArray(responseString);
+                                //Log.e("myLog",jsonArray.toString());
 
-                        for(int i=0; i < jsonArray.length(); i++) {
-                            JSONObject jsonobject = jsonArray.getJSONObject(i);
-                            String name = jsonobject.getString("name");
-                            String ask = jsonobject.getString("ask");
-                            String bid = jsonobject.getString("bid");
-                            String time = jsonobject.getString("time");
+                                for(int i=0; i < jsonArray.length(); i++) {
+                                    JSONObject jsonobject = jsonArray.getJSONObject(i);
+                                    String name = jsonobject.getString("name");
+                                    String ask = jsonobject.getString("ask");
+                                    String bid = jsonobject.getString("bid");
+                                    String time = jsonobject.getString("time");
 
-                            stringArray.add(name);
-                            for(String str: stringArray){
-                                Log.e("Currency Pairs:",str);
+                                    stringArray.add(name);
+
+                                    for(String str: stringArray){
+                                        //Log.e("Currency Pairs:",str);
+                                    }
+                                }
+                            }catch (Throwable t){
+                                Log.e("myLog","catch error");
                             }
                         }
-                        /*
-                        for(int i = 0; i < jsonArray.length();  i++){
-                            JSONObject jsonObject = jsonArray.getJSONObject(i);
-                            stringArray.add(jsonObject.toString());
-                        }*/
-                    }catch (Throwable t){
-                        Log.e("myLog","catch error");
-                    }
-
-/*                    runOnUiThread(new Runnable() {
-                        public void run() {
-                            //myText.setText(responseString);
-                            //Toast.makeText(getBaseContext(), "run on ui thread", Toast.LENGTH_SHORT).show();
-                        }
-                    });*/
+                    });
                 }
-            } catch (IOException e) {                e.printStackTrace();            }
+            } catch (IOException e) {
+                Log.e("Connection fail:",e.toString());
+                e.printStackTrace();
+            }
             finally {
                 if (connection != null) {                    connection.disconnect();                }
             }
-            return null;
+            return stringArray;
+        }
+        //return to UI thread
+        protected void onPostExecute(ArrayList<String> arrayList){
+            super.onPostExecute(arrayList);
+            ArrayAdapter adapter = new ArrayAdapter(getBaseContext(),android.R.layout.simple_list_item_1,arrayList);
+            lvCurrency.setAdapter(adapter);
         }
     }
 }

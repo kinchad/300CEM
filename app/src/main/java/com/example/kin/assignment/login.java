@@ -44,6 +44,7 @@ public class login extends AppCompatActivity {
                 if(loginUser(userid,password)){
                     Intent intent = new Intent(v.getContext(),homePage.class);
                     startActivity(intent);
+                    Toast.makeText(getBaseContext(),"Welcome...",Toast.LENGTH_LONG).show();
                 }else{
                     Toast.makeText(getBaseContext(),"Wrong login id or password",Toast.LENGTH_LONG).show();
                 }
@@ -78,13 +79,8 @@ public class login extends AppCompatActivity {
 
         for (int i=0;i<cursor.getCount();i++){
             Log.e("DB user:",cursor.getString(0) +" / "+cursor.getString(1));
-            Log.e("Input user:",userid +" / "+password);
-            if(userid==cursor.getString(0) && password==cursor.getString(1)){
-                Log.e("Check Log :","check point");
-                Log.e("Check Log :",cursor.getString(0) +" / "+cursor.getString(1));
+            if(userid.equals(cursor.getString(0)) && password.equals(cursor.getString(1))){
                 return true;
-            }else{
-                Log.e("Check Log :",Boolean.toString(userid.equals(cursor.getString(0))));
             }
             cursor.moveToNext();
         }
