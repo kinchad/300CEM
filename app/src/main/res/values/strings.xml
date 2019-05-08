@@ -24,5 +24,6 @@
         <item>AUD/USD</item>
         <item>USD/CNY</item>
     </string-array>
+    <string name="title_activity_favour">favour</string>
 
 </resources>

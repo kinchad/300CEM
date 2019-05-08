@@ -1,16 +1,221 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools2="http://schemas.android.com/tools"
+    android:id="@+id/linearAll"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".currencyDetail">
-
-    <TextView
-        android:id="@+id/textView2"
+    android:orientation="vertical"
+    tools:layout_editor_absoluteX="0dp"
+    tools:layout_editor_absoluteY="16dp"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="currency page"
-        tools:layout_editor_absoluteX="135dp"
-        tools:layout_editor_absoluteY="265dp" />
-</android.support.constraint.ConstraintLayout>
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tvCurrencyName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Currency Name"
+            android:layout_margin="30dp"
+            android:textSize="30dp"
+            />
+
+        <ImageButton
+            android:id="@+id/btnFavour"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="30dp"
+            app:srcCompat="@android:drawable/btn_star_big_on" />
+    </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/tvSevenDay1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="7 Day prediction"
+        android:layout_margin="20dp" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_margin="20dp">
+
+            <TextView
+                android:id="@+id/tv7dayAlgorithm1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Algorithm:" />
+
+            <TextView
+                android:id="@+id/tv7dayBid1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Bid Price:" />
+
+            <TextView
+                android:id="@+id/tv7dayAsk1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ask Price:" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_margin="20dp">
+
+            <TextView
+                android:id="@+id/tv7dayAlgorithm2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Algorithm:" />
+
+            <TextView
+                android:id="@+id/tv7dayBid2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Bid Price:" />
+
+            <TextView
+                android:id="@+id/tv7dayAsk2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ask Price:" />
+        </LinearLayout>
+    </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/tvOneMonth1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="1 month prediction"
+        android:layout_margin="20dp" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_margin="20dp">
+
+            <TextView
+                android:id="@+id/tv1monthAlgorithm1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Algorithm:" />
+
+            <TextView
+                android:id="@+id/tv1monthBid1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Bid Price:" />
+
+            <TextView
+                android:id="@+id/tv1monthAsk1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ask Price:" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_margin="20dp">
+
+            <TextView
+                android:id="@+id/tv1monthAlgorithm2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Algorithm:" />
+
+            <TextView
+                android:id="@+id/tv1monthBid2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Bid Price:" />
+
+            <TextView
+                android:id="@+id/tv1monthAsk2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ask Price:" />
+        </LinearLayout>
+    </LinearLayout>
+    <TextView
+        android:id="@+id/tvOneYear1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="1 year prediction"
+        android:layout_margin="20dp" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_margin="20dp">
+
+            <TextView
+                android:id="@+id/tv1yearAlgorithm1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Algorithm:" />
+
+            <TextView
+                android:id="@+id/tv1yearBid1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Bid Price:" />
+
+            <TextView
+                android:id="@+id/tv1yearAsk1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ask Price:" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_margin="20dp">
+
+            <TextView
+                android:id="@+id/tv1yearAlgorithm2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Algorithm:" />
+
+            <TextView
+                android:id="@+id/tv1yearBid2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Bid Price:" />
+
+            <TextView
+                android:id="@+id/tv1yearAsk2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ask Price:" />
+
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

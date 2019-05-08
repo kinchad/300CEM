@@ -32,7 +32,7 @@ public class register extends AppCompatActivity {
         btnRegister.setOnClickListener(new Button.OnClickListener(){
             public void onClick(View v){
                 add(userid.getText().toString(),password.getText().toString(),userName.getText().toString());
-                displayToLog();
+                //displayToLog();
                 Intent intent = new Intent(v.getContext(),login.class);
                 startActivity(intent);
             }
@@ -47,7 +47,6 @@ public class register extends AppCompatActivity {
             Log.e("SQL Error:",se.getMessage());
             Toast.makeText(getBaseContext(),"Register fail",Toast.LENGTH_LONG).show();
         }
-
     }
     private void displayToLog(){
         SQLiteDatabase db = SD.getWritableDatabase();

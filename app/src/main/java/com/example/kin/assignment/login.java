@@ -32,7 +32,7 @@ public class login extends AppCompatActivity {
         btnRegister = (Button)findViewById(R.id.btnRegister);
 
         //deleteAll();
-        displayToLog();
+        //displayToLog();
 
         btnLogin.setOnClickListener(new Button.OnClickListener(){
             public void onClick(View v){
@@ -43,6 +43,7 @@ public class login extends AppCompatActivity {
 
                 if(loginUser(userid,password)){
                     Intent intent = new Intent(v.getContext(),homePage.class);
+                    intent.putExtra("userid",userid);
                     startActivity(intent);
                     Toast.makeText(getBaseContext(),"Welcome...",Toast.LENGTH_LONG).show();
                 }else{

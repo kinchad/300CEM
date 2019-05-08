@@ -1,6 +1,8 @@
 package com.example.kin.assignment;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -39,6 +41,7 @@ import javax.net.ssl.HttpsURLConnection;
 public class homePage extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    private  String userid;
     private ListView lvCurrency;
     private String[] currencyRates;
 
@@ -50,6 +53,9 @@ public class homePage extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
+
+        Intent intent = getIntent();
+        userid = intent.getStringExtra("userid");
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -71,13 +77,13 @@ public class homePage extends AppCompatActivity
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+
         new httpClient().execute();
 
         lvCurrency = findViewById(R.id.lvCurrency);
         //currencyRates = getResources().getStringArray(R.array.currencyRates);
         //ArrayAdapter adapter = new ArrayAdapter(this,android.R.layout.simple_list_item_1,currencyRates);
 
-        Log.e("check log:","check point a");
         lvCurrency.setOnItemClickListener(
             new AdapterView.OnItemClickListener() {
                 @Override
@@ -85,6 +91,7 @@ public class homePage extends AppCompatActivity
                     Toast.makeText(getBaseContext(), stringArray.get(position)+" Item clicked!", Toast.LENGTH_LONG).show();
                     Intent intent = new Intent(getBaseContext(),currencyDetail.class);
                     intent.putExtra("currencyName",stringArray.get(position));
+                    intent.putExtra("userid",userid);
                     startActivity(intent);
                 }
             }
@@ -127,17 +134,20 @@ public class homePage extends AppCompatActivity
         if (id == R.id.homepage) {
             Intent intent = new Intent(this,homePage.class);
             startActivity(intent);
-        } else if (id == R.id.recommend) {
+        }else if(id==R.id.favour) {
+            Intent intent = new Intent(this,favour.class);
+            startActivity(intent);
+        }else if (id == R.id.recommend) {
             Intent intent = new Intent(this,recommendCur.class);
             startActivity(intent);
-        } else if (id == R.id.converter) {
+        }else if (id == R.id.converter) {
             Intent intent = new Intent(this,converter.class);
             startActivity(intent);
-        } else if (id == R.id.nav_manage) {
+        }else if (id == R.id.nav_manage) {
 
-        } else if (id == R.id.nav_share) {
+        }else if (id == R.id.nav_share) {
 
-        } else if (id == R.id.nav_send) {
+        }else if (id == R.id.nav_send) {
 
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -146,7 +156,6 @@ public class homePage extends AppCompatActivity
     }
     class httpClient extends AsyncTask<Void, Void, ArrayList<String>> {
         protected ArrayList<String> doInBackground(Void... params) {
-            Log.e("httpClient:","background service is running...");
             String urlString = "http://10.112.160.105:7777/getLatestCurrency/";
             HttpURLConnection connection = null;
             try {
@@ -179,7 +188,6 @@ public class homePage extends AppCompatActivity
 
                     // get the string from website
                     responseString = stringBuffer.toString();
-                    //Log.e("myLog",responseString);
 
                    runOnUiThread(new Runnable() {
                         public void run() {
@@ -222,4 +230,5 @@ public class homePage extends AppCompatActivity
             lvCurrency.setAdapter(adapter);
         }
     }
+
 }
