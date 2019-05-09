@@ -16,19 +16,37 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.EditText;
+import android.widget.ListAdapter;
+import android.widget.ListView;
+import android.widget.SimpleAdapter;
+import android.widget.Toast;
+
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class favour extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     public sqlData SD = null;
+    private ListView lvCurrency;
+    public List<HashMap<String , String>> list;
+    public ListAdapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_favour);
 
         SD = new sqlData(this);
+        list = new ArrayList<>();
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -48,6 +66,8 @@ public class favour extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        lvCurrency = findViewById(R.id.lvCurrency);
 
         getAll();
     }
@@ -124,9 +144,9 @@ public class favour extends AppCompatActivity
         db.execSQL("update user set password='"+password+"' where userid='"+userid+"'");
         db.close();
     }
-    private void delete(String userid){
+    private void delete(String currencyName,String remarks){
         SQLiteDatabase db = SD.getWritableDatabase();
-        db.execSQL("delete from user WHERE userid = '"+userid+"'");
+        db.execSQL("delete from favour WHERE currencyName = '"+currencyName+"' and remarks='"+remarks+"'");
         db.close();
     }
     private void displayToLog(){
@@ -152,9 +172,26 @@ public class favour extends AppCompatActivity
             Log.e("UserID:",userid);
             Log.e("currencyName:",currencyName);
             Log.e("remarks:",remarks);
+
+            HashMap<String , String> hashMap = new HashMap<>();
+            hashMap.put("currencyName" , currencyName);
+            hashMap.put("remarks" , remarks);
+            list.add(hashMap);
         }
         cursor.close();
         db.close();
+
+        adapter = new SimpleAdapter(this,list,android.R.layout.simple_list_item_2 ,new String[]{"currencyName" , "remarks"} ,new int[]{android.R.id.text1 , android.R.id.text2});
+        //ArrayAdapter adapter = new ArrayAdapter(getBaseContext(),android.R.layout.simple_list_item_1,stringArray);
+        lvCurrency.setAdapter(adapter);
+        lvCurrency.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                list.remove(i);
+                Log.e("favour.java",lvCurrency.getItemAtPosition(i).toString());
+                ((BaseAdapter)adapter).notifyDataSetChanged();
+            }
+        });
     }
     private void deleteAll(){
         SQLiteDatabase db = SD.getWritableDatabase();

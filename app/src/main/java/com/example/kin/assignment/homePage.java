@@ -41,7 +41,7 @@ import javax.net.ssl.HttpsURLConnection;
 public class homePage extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private  String userid;
+    private String userid;
     private ListView lvCurrency;
     private String[] currencyRates;
 
@@ -173,7 +173,7 @@ public class homePage extends AppCompatActivity
                 //return 200 -> request successful
                 if( connection.getResponseCode() == HttpsURLConnection.HTTP_OK ){
                     // read the website
-                    InputStream inputStream     = connection.getInputStream();
+                    InputStream inputStream = connection.getInputStream();
                     BufferedReader bufferedReader  = new BufferedReader( new InputStreamReader(inputStream) );
 
                     String tempStr;
