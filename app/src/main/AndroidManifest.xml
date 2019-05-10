@@ -14,13 +14,29 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".settings"
+            android:label="@string/title_activity_settings"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:configChanges="locale|orientation"></activity>
+
+        <meta-data
+            android:name="com.google.android.actions"
+            android:resource="@xml/textview_border" />
+
+        <activity
+            android:name=".converter"
+            android:label="@string/title_activity_converter"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".recommend"
+            android:label="@string/title_activity_recommend"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".favour"
             android:label="@string/title_activity_favour"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".currencyDetail" />
         <activity android:name=".register" />
-        <activity android:name=".recommendCur" />
-        <activity android:name=".converter" />
         <activity
             android:name=".homePage"
             android:label="@string/title_activity_home_page"

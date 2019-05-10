@@ -6,4 +6,7 @@
     <string name="userName">用戶名稱</string>
     <string name="btnLogin">登入</string>
     <string name="btnRegister">註冊</string>
+
+    <string name="btnChi">中文</string>
+    <string name="btnEng">英文</string>
 </resources>

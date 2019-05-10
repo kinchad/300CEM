@@ -1,12 +1,16 @@
 package com.example.kin.assignment;
 
+import android.Manifest;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
+import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -19,10 +23,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -34,33 +41,40 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
 
 import javax.net.ssl.HttpsURLConnection;
 
-public class homePage extends AppCompatActivity
+public class recommend extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-
-    private String userid;
-    private ListView lvCurrency;
-    private String[] currencyRates;
-
+    private  static final String TAG="recommend.java";
+    private FusedLocationProviderClient fusedLocationClient;
+    private int locationRequestCode = 1000;
+    private double wayLatitude = 0.0, wayLongitude = 0.0;
+    private String recommendCur="CNY";
     String responseString;
     JSONArray jsonArray;
     ArrayList<String> stringArray = new ArrayList<String>();
+    private ListView lvCurrency;
+    private String userid;
 
+    Geocoder geocoder;
+    List<Address> addresses;
+
+    TextView tvLocation;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home_page);
+        setContentView(R.layout.activity_recommend);
 
         Intent intent = getIntent();
         userid = intent.getStringExtra("userid");
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = findViewById(R.id.fab);
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -68,34 +82,80 @@ public class homePage extends AppCompatActivity
                         .setAction("Action", null).show();
             }
         });
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = findViewById(R.id.nav_view);
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        new httpClient().execute();
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
-        lvCurrency = findViewById(R.id.lvCurrency);
-        //currencyRates = getResources().getStringArray(R.array.currencyRates);
-        //ArrayAdapter adapter = new ArrayAdapter(this,android.R.layout.simple_list_item_1,currencyRates);
+        // check permission
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // reuqest for permission
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},locationRequestCode);
+        } else {  } // already permission granted
+        fusedLocationClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
+            @Override
+            public void onSuccess(Location location) {
+            // Got last known location. In some rare situations this can be null.
+                if (location != null) {
+                    wayLatitude = location.getLatitude();
+                    wayLongitude = location.getLongitude();
+                    Log.d(TAG,"inside function:"+String.valueOf(wayLongitude));
 
-        lvCurrency.setOnItemClickListener(
-            new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    Toast.makeText(getBaseContext(), stringArray.get(position)+" Item clicked!", Toast.LENGTH_LONG).show();
-                    Intent intent = new Intent(getBaseContext(),currencyDetail.class);
-                    intent.putExtra("currencyName",stringArray.get(position));
-                    intent.putExtra("userid",userid);
-                    startActivity(intent);
+                    geocoder = new Geocoder(recommend.this, Locale.TRADITIONAL_CHINESE);
+                    try {
+                        addresses = geocoder.getFromLocation(wayLatitude, wayLongitude, 1);
+                        String address = addresses.get(0).getAddressLine(0);
+                        String country = addresses.get(0).getCountryName();
+                        String area = addresses.get(0).getAdminArea();
+                        String locality = addresses.get(0).getLocality();
+                        String street = addresses.get(0).getThoroughfare();
+                        String streetNumber = addresses.get(0).getFeatureName();
+                        String postalCode = addresses.get(0).getPostalCode();
+
+                        //tvLocation.setText(String.valueOf(wayLatitude)+String.valueOf(wayLongitude));
+                        Log.e("Country",country);
+                        if(country.equals("美國")){
+                            recommendCur = "USD";
+                        }else if(country.equals("中國") || country.equals("香港")){
+                            recommendCur = "CNY";
+                        }else if(country.equals("日本")){
+                            recommendCur = "JPY";
+                        }
+
+                        new httpClient().execute();
+                        lvCurrency = findViewById(R.id.lvCurrency);
+
+                        lvCurrency.setOnItemClickListener(
+                                new AdapterView.OnItemClickListener() {
+                                    @Override
+                                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                        Toast.makeText(getBaseContext(), stringArray.get(position)+" Item clicked!", Toast.LENGTH_LONG).show();
+                                        Intent intent = new Intent(getBaseContext(),currencyDetail.class);
+                                        intent.putExtra("currencyName",stringArray.get(position));
+                                        intent.putExtra("userid",userid);
+                                        startActivity(intent);
+                                    }
+                                }
+                        );
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
                 }
             }
-        );
+        });
+
+
+
     }
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -105,12 +165,14 @@ public class homePage extends AppCompatActivity
             super.onBackPressed();
         }
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.home_page, menu);
+        getMenuInflater().inflate(R.menu.recommend, menu);
         return true;
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -122,8 +184,10 @@ public class homePage extends AppCompatActivity
         if (id == R.id.action_settings) {
             return true;
         }
+
         return super.onOptionsItemSelected(item);
     }
+
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -145,22 +209,22 @@ public class homePage extends AppCompatActivity
         }else if (id == R.id.converter) {
             Intent intent = new Intent(this,converter.class);
             startActivity(intent);
-        }else if (id == R.id.settings) {
-            Intent intent = new Intent(this,settings.class);
-            intent.putExtra("userid",userid);
-            startActivity(intent);
+        }else if (id == R.id.nav_manage) {
+
         }else if (id == R.id.nav_share) {
 
         }else if (id == R.id.nav_send) {
 
         }
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
     class httpClient extends AsyncTask<Void, Void, ArrayList<String>> {
         protected ArrayList<String> doInBackground(Void... params) {
-            String urlString = "http://10.112.160.105:7777/getLatestCurrency/";
+            Log.e("Http background service",recommendCur);
+            String urlString = "http://10.112.160.105:7777/getCurrencyBySimilarName?name="+recommendCur;
             HttpURLConnection connection = null;
             try {
                 // create URL & connection
@@ -193,7 +257,7 @@ public class homePage extends AppCompatActivity
                     // get the string from website
                     responseString = stringBuffer.toString();
 
-                   runOnUiThread(new Runnable() {
+                    runOnUiThread(new Runnable() {
                         public void run() {
                             try{
                                 jsonArray = new JSONArray(responseString);
@@ -202,10 +266,6 @@ public class homePage extends AppCompatActivity
                                 for(int i=0; i < jsonArray.length(); i++) {
                                     JSONObject jsonobject = jsonArray.getJSONObject(i);
                                     String name = jsonobject.getString("name");
-                                    String ask = jsonobject.getString("ask");
-                                    String bid = jsonobject.getString("bid");
-                                    String time = jsonobject.getString("time");
-
                                     stringArray.add(name);
 
                                     for(String str: stringArray){
@@ -213,7 +273,7 @@ public class homePage extends AppCompatActivity
                                     }
                                 }
                             }catch (Throwable t){
-                                Log.e("myLog","catch error");
+                                Log.e("Exception t catch",t.toString());
                             }
                         }
                     });

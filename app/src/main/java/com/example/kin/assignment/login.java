@@ -26,18 +26,16 @@ public class login extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         SD = new sqlData(this);
-        etUserID = (EditText)findViewById(R.id.etUserID);
-        etPassword = (EditText)findViewById(R.id.etPassword);
-        btnLogin = (Button)findViewById(R.id.btnLogin);
-        btnRegister = (Button)findViewById(R.id.btnRegister);
+        etUserID = findViewById(R.id.etUserID);
+        etPassword = findViewById(R.id.etPassword);
+        btnLogin = findViewById(R.id.btnLogin);
+        btnRegister = findViewById(R.id.btnRegister);
 
         //deleteAll();
         //displayToLog();
 
         btnLogin.setOnClickListener(new Button.OnClickListener(){
             public void onClick(View v){
-                boolean login = false;
-
                 String userid = etUserID.getText().toString();
                 String password = etPassword.getText().toString();
 
@@ -45,6 +43,7 @@ public class login extends AppCompatActivity {
                     Intent intent = new Intent(v.getContext(),homePage.class);
                     intent.putExtra("userid",userid);
                     startActivity(intent);
+                    finish();
                     Toast.makeText(getBaseContext(),"Welcome...",Toast.LENGTH_LONG).show();
                 }else{
                     Toast.makeText(getBaseContext(),"Wrong login id or password",Toast.LENGTH_LONG).show();

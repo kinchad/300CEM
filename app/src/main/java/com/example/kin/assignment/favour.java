@@ -38,6 +38,8 @@ public class favour extends AppCompatActivity
     private ListView lvCurrency;
     public List<HashMap<String , String>> list;
     public ListAdapter adapter;
+    private String userid;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,6 +47,9 @@ public class favour extends AppCompatActivity
 
         SD = new sqlData(this);
         list = new ArrayList<>();
+
+        Intent intent = getIntent();
+        userid = intent.getStringExtra("userid");
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -112,12 +117,15 @@ public class favour extends AppCompatActivity
 
         if (id == R.id.homepage) {
             Intent intent = new Intent(this,homePage.class);
+            intent.putExtra("userid",userid);
             startActivity(intent);
         }else if(id==R.id.favour) {
             Intent intent = new Intent(this,favour.class);
+            intent.putExtra("userid",userid);
             startActivity(intent);
         }else if (id == R.id.recommend) {
-            Intent intent = new Intent(this,recommendCur.class);
+            Intent intent = new Intent(this,recommend.class);
+            intent.putExtra("userid",userid);
             startActivity(intent);
         }else if (id == R.id.converter) {
             Intent intent = new Intent(this,converter.class);

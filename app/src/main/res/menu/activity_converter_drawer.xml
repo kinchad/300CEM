@@ -5,40 +5,33 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/homepage"
+            android:id="@+id/nav_camera"
             android:icon="@drawable/ic_menu_camera"
-            android:title="Home" />
+            android:title="Import" />
         <item
-            android:id="@+id/favour"
+            android:id="@+id/nav_gallery"
             android:icon="@drawable/ic_menu_gallery"
-            android:title="Favourite FX rates" />
+            android:title="Gallery" />
         <item
-            android:id="@+id/recommend"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="Recommended FX rates" />
-        <item
-            android:id="@+id/converter"
+            android:id="@+id/nav_slideshow"
             android:icon="@drawable/ic_menu_slideshow"
-            android:title="Converter" />
+            android:title="Slideshow" />
         <item
-            android:id="@+id/settings"
+            android:id="@+id/nav_manage"
             android:icon="@drawable/ic_menu_manage"
-            android:title="Settings" />
+            android:title="Tools" />
     </group>
 
-    <item android:title="About">
+    <item android:title="Communicate">
         <menu>
             <item
                 android:id="@+id/nav_share"
                 android:icon="@drawable/ic_menu_share"
-                android:title="Feeddback" />
+                android:title="Share" />
             <item
                 android:id="@+id/nav_send"
                 android:icon="@drawable/ic_menu_send"
-                android:title="About this apps" />
-            <item
-                android:id="@+id/privacy"
-                android:title="Privacy Policy" />
+                android:title="Send" />
         </menu>
     </item>
 
