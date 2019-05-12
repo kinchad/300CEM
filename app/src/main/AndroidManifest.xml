@@ -14,10 +14,18 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".privacy"
+            android:label="@string/title_activity_privacy"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".about"
+            android:label="@string/title_activity_about"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".settings"
+            android:configChanges="locale|orientation"
             android:label="@string/title_activity_settings"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:configChanges="locale|orientation"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <meta-data
             android:name="com.google.android.actions"

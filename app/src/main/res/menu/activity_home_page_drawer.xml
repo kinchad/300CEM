@@ -7,39 +7,35 @@
         <item
             android:id="@+id/homepage"
             android:icon="@drawable/ic_menu_camera"
-            android:title="Home" />
+            android:title="@string/title_activity_home_page" />
         <item
             android:id="@+id/favour"
             android:icon="@drawable/ic_menu_gallery"
-            android:title="Favourite FX rates" />
+            android:title="@string/title_activity_favour" />
         <item
             android:id="@+id/recommend"
             android:icon="@drawable/ic_menu_gallery"
-            android:title="Recommended FX rates" />
+            android:title="@string/title_activity_recommend" />
         <item
             android:id="@+id/converter"
             android:icon="@drawable/ic_menu_slideshow"
-            android:title="Converter" />
+            android:title="@string/title_activity_converter" />
         <item
             android:id="@+id/settings"
             android:icon="@drawable/ic_menu_manage"
-            android:title="Settings" />
+            android:title="@string/title_activity_settings" />
     </group>
 
-    <item android:title="About">
+    <item android:title="@string/title_activity_about">
         <menu>
             <item
-                android:id="@+id/nav_share"
-                android:icon="@drawable/ic_menu_share"
-                android:title="Feeddback" />
-            <item
-                android:id="@+id/nav_send"
+                android:id="@+id/about"
                 android:icon="@drawable/ic_menu_send"
-                android:title="About this apps" />
+                android:title="@string/title_activity_about" />
             <item
                 android:id="@+id/privacy"
-                android:title="Privacy Policy" />
+                android:icon="@drawable/ic_menu_send"
+                android:title="@string/title_activity_privacy" />
         </menu>
     </item>
-
 </menu>

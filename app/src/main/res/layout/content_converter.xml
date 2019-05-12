@@ -11,18 +11,17 @@
         android:id="@+id/tvBaseName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Base Currency"
+        android:text="@string/baseCurrency"
         android:textSize="32dp"
         android:layout_marginTop="90dp"
-        android:layout_marginBottom="20dp"
-        android:layout_marginRight="20dp"
         android:layout_marginLeft="20dp" />
 
     <Spinner
         android:id="@+id/baseSpinner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="20dp" />
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="20dp" />
 
     <EditText
         android:id="@+id/etBase"
@@ -30,23 +29,31 @@
         android:layout_height="wrap_content"
         android:ems="5"
         android:inputType="numberDecimal"
-        android:layout_margin="20dp" />
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="20dp" />
+
+    <View
+        android:layout_width="300dp"
+        android:layout_height="10dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginLeft="20dp"
+        android:background="@android:color/darker_gray"/>
 
     <TextView
         android:id="@+id/tvTargetTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:text="Target Currency"
+        android:text="@string/targetCurrency"
         android:textSize="32dp"
-        android:layout_margin="20dp" />
+        android:layout_marginTop="50dp"
+        android:layout_marginLeft="20dp" />
 
     <Spinner
         android:id="@+id/targetSpinner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="20dp" />
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="20dp" />
 
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -58,7 +65,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
-            android:text="Convert" />
+            android:text="@string/btnConvert" />
 
         <TextView
             android:id="@+id/tvTarget"

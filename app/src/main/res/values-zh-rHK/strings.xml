@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Assignment</string>
+    <string name="app_name">FX Helper</string>
     <string name="loginID">登入ID</string>
     <string name="password">密碼</string>
     <string name="userName">用戶名稱</string>
@@ -9,4 +9,25 @@
 
     <string name="btnChi">中文</string>
     <string name="btnEng">英文</string>
+
+    <string name="title_activity_home_page">主頁</string>
+    <string name="title_activity_favour">我的最愛</string>
+    <string name="title_activity_recommend">推薦參考</string>
+    <string name="title_activity_converter">兌換計算器</string>
+    <string name="title_activity_settings">設定</string>
+    <string name="title_activity_about">關於</string>
+    <string name="title_activity_privacy">私隱聲明</string>
+
+    <string name="search">搜尋 : </string>
+    <string name="keyHint">輸入匯率對名稱</string>
+    <string name="baseCurrency">持有貨幣</string>
+    <string name="targetCurrency">目標貨幣</string>
+    <string name="btnConvert">轉換</string>
+    <string name="language">語言</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_desc">Navigation header</string>
+
 </resources>

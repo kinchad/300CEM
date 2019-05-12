@@ -53,14 +53,6 @@ public class settings extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -116,8 +108,9 @@ public class settings extends AppCompatActivity
         });
         btnLogout.setOnClickListener(new Button.OnClickListener(){
             public void onClick(View v){
-                //finish();
-                //System.exit(0);
+                Intent intent = new Intent(getBaseContext(),login.class);
+                startActivity(intent);
+                finish();
             }
         });
         getUser(userid);
@@ -139,39 +132,38 @@ public class settings extends AppCompatActivity
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
+        if (id == R.id.homepage) {
+            Intent intent = new Intent(this,homePage.class);
+            intent.putExtra("userid",userid);
+            startActivity(intent);
+        }else if(id==R.id.favour) {
+            Intent intent = new Intent(this,favour.class);
+            intent.putExtra("userid",userid);
+            startActivity(intent);
+        }else if (id == R.id.recommend) {
+            Intent intent = new Intent(this,recommend.class);
+            intent.putExtra("userid",userid);
+            startActivity(intent);
+        }else if (id == R.id.converter) {
+            Intent intent = new Intent(this,converter.class);
+            startActivity(intent);
+        }else if (id == R.id.settings) {
+            Intent intent = new Intent(this,settings.class);
+            intent.putExtra("userid",userid);
+            startActivity(intent);
+            finish();
+        }else if (id == R.id.about) {
+            Intent intent = new Intent(this,about.class);
+            startActivity(intent);
+        }else if (id == R.id.privacy) {
+            Intent intent = new Intent(this,privacy.class);
+            startActivity(intent);
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

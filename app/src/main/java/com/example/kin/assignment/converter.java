@@ -50,21 +50,14 @@ public class converter extends AppCompatActivity
     String responseString;
     JSONArray jsonArray;
 
+    String userid;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_converter);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -74,6 +67,9 @@ public class converter extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        Intent intent = getIntent();
+        userid = intent.getStringExtra("userid");
 
         baseSpinner = findViewById(R.id.baseSpinner);
         targetSpinner = findViewById(R.id.targetSpinner);
@@ -134,43 +130,41 @@ public class converter extends AppCompatActivity
         }
     }
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
+    public boolean onCreateOptionsMenu(Menu menu) {      // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.converter, menu);
         return true;
     }
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
+        if (id == R.id.homepage) {
+            Intent intent = new Intent(this,homePage.class);
+            intent.putExtra("userid",userid);
+            startActivity(intent);
+        }else if(id==R.id.favour) {
+            Intent intent = new Intent(this,favour.class);
+            intent.putExtra("userid",userid);
+            startActivity(intent);
+        }else if (id == R.id.recommend) {
+            Intent intent = new Intent(this,recommend.class);
+            intent.putExtra("userid",userid);
+            startActivity(intent);
+        }else if (id == R.id.converter) {
+            Intent intent = new Intent(this,converter.class);
+            startActivity(intent);
+        }else if (id == R.id.settings) {
+            Intent intent = new Intent(this,settings.class);
+            intent.putExtra("userid",userid);
+            startActivity(intent);
+            finish();
+        }else if (id == R.id.about) {
+            Intent intent = new Intent(this,about.class);
+            startActivity(intent);
+        }else if (id == R.id.privacy) {
+            Intent intent = new Intent(this,privacy.class);
+            startActivity(intent);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -215,7 +209,6 @@ public class converter extends AppCompatActivity
                     try{
                         Double bid=0.0;
                         jsonArray = new JSONArray(responseString);
-                        //Log.e("myLog",jsonArray.toString());
 
                         for(int i=0; i < jsonArray.length(); i++) {
                             JSONObject jsonobject = jsonArray.getJSONObject(i);
@@ -234,15 +227,18 @@ public class converter extends AppCompatActivity
                 e.printStackTrace();
             }
             finally {
-                if (connection != null) {                    connection.disconnect();                }
+                if (connection != null) {     connection.disconnect();      }
             }
-            return 0.0;
+            return -1.0;
         }
         //return to UI thread
         protected void onPostExecute(Double result){
             super.onPostExecute(result);
-            if(result==0.0){
+            if(result==-1.0){
                 Toast.makeText(getBaseContext(),"No such currency pairs rate records in this system.",Toast.LENGTH_LONG).show();
+            }else if(result==0.0){
+                Toast.makeText(getBaseContext(),"Enter the base currency amount.",Toast.LENGTH_LONG).show();
+                tvTarget.setText(result.toString());
             }else{
                 tvTarget.setText(result.toString());
             }

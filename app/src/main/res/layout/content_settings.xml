@@ -5,48 +5,67 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:focusableInTouchMode="true"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".settings"
     tools:showIn="@layout/app_bar_settings">
 
     <TextView
         android:id="@+id/tvUserName"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="User name : " />
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="20dp"
+        android:text="@string/userName"/>
 
     <EditText
         android:id="@+id/etUserName"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"/>
 
     <TextView
         android:id="@+id/tvPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Password : " />
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="20dp"
+        android:text="@string/password" />
 
     <EditText
         android:id="@+id/etPassword"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
         android:inputType="textPassword"/>
 
     <Button
         android:id="@+id/btnUpdateAcc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
         android:text="更改個人資料"/>
+
+    <View
+        android:layout_width="300dp"
+        android:layout_height="5dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginLeft="20dp"
+        android:background="@android:color/darker_gray"/>
 
     <TextView
         android:id="@+id/textView2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Language" />
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="20dp"
+        android:text="@string/language" />
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="20dp"
         android:orientation="horizontal">
 
         <Button
@@ -62,9 +81,18 @@
             android:text="@string/btnEng" />
     </LinearLayout>
 
+    <View
+        android:layout_width="300dp"
+        android:layout_height="5dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginLeft="20dp"
+        android:background="@android:color/darker_gray"/>
+
     <Button
         android:id="@+id/btnLogout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:layout_marginLeft="20dp"
         android:text="登出"/>
 </LinearLayout>

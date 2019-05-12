@@ -7,6 +7,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -44,10 +46,13 @@ public class homePage extends AppCompatActivity
     private String userid;
     private ListView lvCurrency;
     private String[] currencyRates;
+    private EditText etSearch;
 
     String responseString;
     JSONArray jsonArray;
     ArrayList<String> stringArray = new ArrayList<String>();
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,14 +65,6 @@ public class homePage extends AppCompatActivity
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -80,6 +77,7 @@ public class homePage extends AppCompatActivity
         new httpClient().execute();
 
         lvCurrency = findViewById(R.id.lvCurrency);
+        etSearch = findViewById(R.id.etSearch);
         //currencyRates = getResources().getStringArray(R.array.currencyRates);
         //ArrayAdapter adapter = new ArrayAdapter(this,android.R.layout.simple_list_item_1,currencyRates);
 
@@ -95,6 +93,20 @@ public class homePage extends AppCompatActivity
                 }
             }
         );
+        etSearch.addTextChangedListener(new TextWatcher() {
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(!s.equals("") ) {
+                    searching(s.toString());
+                    //Log.e("Text Changed",s.toString());
+                }
+            }
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
     }
     @Override
     public void onBackPressed() {
@@ -110,19 +122,6 @@ public class homePage extends AppCompatActivity
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.home_page, menu);
         return true;
-    }
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -149,10 +148,13 @@ public class homePage extends AppCompatActivity
             Intent intent = new Intent(this,settings.class);
             intent.putExtra("userid",userid);
             startActivity(intent);
-        }else if (id == R.id.nav_share) {
-
-        }else if (id == R.id.nav_send) {
-
+            finish();
+        }else if (id == R.id.about) {
+            Intent intent = new Intent(this,about.class);
+            startActivity(intent);
+        }else if (id == R.id.privacy) {
+            Intent intent = new Intent(this,privacy.class);
+            startActivity(intent);
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -233,5 +235,15 @@ public class homePage extends AppCompatActivity
             ArrayAdapter adapter = new ArrayAdapter(getBaseContext(),android.R.layout.simple_list_item_1,arrayList);
             lvCurrency.setAdapter(adapter);
         }
+    }
+    private void searching(String key){
+        ArrayList<String> searchArray = new ArrayList<String>();
+        for(int i=0;i<stringArray.size();i++){
+            if(stringArray.get(i).toLowerCase().contains(key.toLowerCase())){
+                searchArray.add(stringArray.get(i));
+            }
+        }
+        ArrayAdapter adapter = new ArrayAdapter(getBaseContext(),android.R.layout.simple_list_item_1,searchArray);
+        lvCurrency.setAdapter(adapter);
     }
 }
