@@ -44,7 +44,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
-        android:text="更改個人資料"/>
+        android:text="@string/updatePersonal"/>
 
     <View
         android:layout_width="300dp"
@@ -94,5 +94,5 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="100dp"
         android:layout_marginLeft="20dp"
-        android:text="登出"/>
+        android:text="@string/btnLogout"/>
 </LinearLayout>

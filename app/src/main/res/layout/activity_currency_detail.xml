@@ -36,7 +36,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="7 Day prediction"
-        android:layout_margin="20dp" />
+        android:textSize="20dp"
+        android:layout_marginLeft="20dp"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -67,40 +68,23 @@
                 android:layout_height="wrap_content"
                 android:text="Ask Price:" />
         </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_margin="20dp">
-
-            <TextView
-                android:id="@+id/tv7dayAlgorithm2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Algorithm:" />
-
-            <TextView
-                android:id="@+id/tv7dayBid2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Bid Price:" />
-
-            <TextView
-                android:id="@+id/tv7dayAsk2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Ask Price:" />
-        </LinearLayout>
     </LinearLayout>
 
+    <View
+        android:layout_width="300dp"
+        android:layout_height="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="15dp"
+        android:background="@android:color/darker_gray"/>
 
     <TextView
         android:id="@+id/tvOneMonth1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="1 month prediction"
-        android:layout_margin="20dp" />
+        android:textSize="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="20dp" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -130,37 +114,23 @@
                 android:layout_height="wrap_content"
                 android:text="Ask Price:" />
         </LinearLayout>
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_margin="20dp">
-
-            <TextView
-                android:id="@+id/tv1monthAlgorithm2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Algorithm:" />
-
-            <TextView
-                android:id="@+id/tv1monthBid2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Bid Price:" />
-
-            <TextView
-                android:id="@+id/tv1monthAsk2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Ask Price:" />
-        </LinearLayout>
     </LinearLayout>
+
+    <View
+        android:layout_width="300dp"
+        android:layout_height="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="15dp"
+        android:background="@android:color/darker_gray"/>
+
     <TextView
         android:id="@+id/tvOneYear1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="1 year prediction"
-        android:layout_margin="20dp" />
+        android:textSize="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="20dp" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -190,31 +160,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Ask Price:" />
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_margin="20dp">
-
-            <TextView
-                android:id="@+id/tv1yearAlgorithm2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Algorithm:" />
-
-            <TextView
-                android:id="@+id/tv1yearBid2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Bid Price:" />
-
-            <TextView
-                android:id="@+id/tv1yearAsk2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Ask Price:" />
-
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

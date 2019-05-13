@@ -5,6 +5,7 @@
     <string name="userName">User name</string>
     <string name="btnLogin">Login</string>
     <string name="btnRegister">Register</string>
+    <string name="btnLogout">Logout</string>
 
     <string name="btnChi">Chinese</string>
     <string name="btnEng">English</string>
@@ -23,6 +24,7 @@
     <string name="targetCurrency">Target Currency</string>
     <string name="btnConvert">Convert</string>
     <string name="language">Language</string>
+    <string name="updatePersonal">Update Personal Information</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>

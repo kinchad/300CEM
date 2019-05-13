@@ -74,6 +74,7 @@ public class privacy extends AppCompatActivity
             startActivity(intent);
         }else if (id == R.id.converter) {
             Intent intent = new Intent(this,converter.class);
+            intent.putExtra("userid",userid);
             startActivity(intent);
         }else if (id == R.id.settings) {
             Intent intent = new Intent(this,settings.class);
@@ -82,9 +83,11 @@ public class privacy extends AppCompatActivity
             finish();
         }else if (id == R.id.about) {
             Intent intent = new Intent(this,about.class);
+            intent.putExtra("userid",userid);
             startActivity(intent);
         }else if (id == R.id.privacy) {
             Intent intent = new Intent(this,privacy.class);
+            intent.putExtra("userid",userid);
             startActivity(intent);
         }
 

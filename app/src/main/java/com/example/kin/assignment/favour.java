@@ -105,6 +105,7 @@ public class favour extends AppCompatActivity
             startActivity(intent);
         }else if (id == R.id.converter) {
             Intent intent = new Intent(this,converter.class);
+            intent.putExtra("userid",userid);
             startActivity(intent);
         }else if (id == R.id.settings) {
             Intent intent = new Intent(this,settings.class);
@@ -113,9 +114,11 @@ public class favour extends AppCompatActivity
             finish();
         }else if (id == R.id.about) {
             Intent intent = new Intent(this,about.class);
+            intent.putExtra("userid",userid);
             startActivity(intent);
         }else if (id == R.id.privacy) {
             Intent intent = new Intent(this,privacy.class);
+            intent.putExtra("userid",userid);
             startActivity(intent);
         }
 
@@ -151,7 +154,7 @@ public class favour extends AppCompatActivity
         Log.e("DB data:",str);
         db.close();
     }
-    private void getAll(){
+    public void getAll(){
         SQLiteDatabase db = SD.getWritableDatabase();
         Cursor cursor = db.rawQuery("select * from favour",null);
         while(cursor.moveToNext()){

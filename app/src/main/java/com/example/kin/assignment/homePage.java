@@ -44,15 +44,13 @@ public class homePage extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private String userid;
-    private ListView lvCurrency;
+    public ListView lvCurrency;
     private String[] currencyRates;
     private EditText etSearch;
 
     String responseString;
     JSONArray jsonArray;
     ArrayList<String> stringArray = new ArrayList<String>();
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,8 +76,6 @@ public class homePage extends AppCompatActivity
 
         lvCurrency = findViewById(R.id.lvCurrency);
         etSearch = findViewById(R.id.etSearch);
-        //currencyRates = getResources().getStringArray(R.array.currencyRates);
-        //ArrayAdapter adapter = new ArrayAdapter(this,android.R.layout.simple_list_item_1,currencyRates);
 
         lvCurrency.setOnItemClickListener(
             new AdapterView.OnItemClickListener() {
@@ -94,18 +90,13 @@ public class homePage extends AppCompatActivity
             }
         );
         etSearch.addTextChangedListener(new TextWatcher() {
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {     }
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if(!s.equals("") ) {
                     searching(s.toString());
-                    //Log.e("Text Changed",s.toString());
                 }
             }
-            public void afterTextChanged(Editable s) {
-
-            }
+            public void afterTextChanged(Editable s) {       }
         });
     }
     @Override
@@ -143,6 +134,7 @@ public class homePage extends AppCompatActivity
             startActivity(intent);
         }else if (id == R.id.converter) {
             Intent intent = new Intent(this,converter.class);
+            intent.putExtra("userid",userid);
             startActivity(intent);
         }else if (id == R.id.settings) {
             Intent intent = new Intent(this,settings.class);
@@ -151,9 +143,11 @@ public class homePage extends AppCompatActivity
             finish();
         }else if (id == R.id.about) {
             Intent intent = new Intent(this,about.class);
+            intent.putExtra("userid",userid);
             startActivity(intent);
         }else if (id == R.id.privacy) {
             Intent intent = new Intent(this,privacy.class);
+            intent.putExtra("userid",userid);
             startActivity(intent);
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -236,7 +230,7 @@ public class homePage extends AppCompatActivity
             lvCurrency.setAdapter(adapter);
         }
     }
-    private void searching(String key){
+    public void searching(String key){
         ArrayList<String> searchArray = new ArrayList<String>();
         for(int i=0;i<stringArray.size();i++){
             if(stringArray.get(i).toLowerCase().contains(key.toLowerCase())){

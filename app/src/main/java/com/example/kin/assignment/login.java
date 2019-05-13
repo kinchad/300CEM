@@ -57,22 +57,7 @@ public class login extends AppCompatActivity {
             }
         });
     }
-    private void add(String userid,String password,String username) {
-        SQLiteDatabase db = SD.getWritableDatabase();
-        db.execSQL("insert into user ('userid','password','username') values ('"+userid+"','"+password+"','"+username+"')");
-        db.close();
-    }
-    private void update(String userid,String password){
-        SQLiteDatabase db = SD.getWritableDatabase();
-        db.execSQL("update user set password='"+password+"' where userid='"+userid+"'");
-        db.close();
-    }
-    private void delete(String userid){
-        SQLiteDatabase db = SD.getWritableDatabase();
-        db.execSQL("delete from user WHERE userid = '"+userid+"'");
-        db.close();
-    }
-    private boolean loginUser(String userid,String password){
+    public boolean loginUser(String userid,String password){
         SQLiteDatabase db = SD.getWritableDatabase();
         Cursor cursor = db.query("user", new String[]{"userid", "password","username"}, null, null, null, null, null);
         cursor.moveToFirst();

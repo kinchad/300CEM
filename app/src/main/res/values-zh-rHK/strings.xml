@@ -6,6 +6,7 @@
     <string name="userName">用戶名稱</string>
     <string name="btnLogin">登入</string>
     <string name="btnRegister">註冊</string>
+    <string name="btnLogout">登出</string>
 
     <string name="btnChi">中文</string>
     <string name="btnEng">英文</string>
@@ -24,6 +25,7 @@
     <string name="targetCurrency">目標貨幣</string>
     <string name="btnConvert">轉換</string>
     <string name="language">語言</string>
+    <string name="updatePersonal">更改個人資料</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>

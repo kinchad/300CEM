@@ -73,7 +73,6 @@ public class settings extends AppCompatActivity
         btnEng = findViewById(R.id.btnEng);
         btnLogout = findViewById(R.id.btnLogout);
 
-        //Log.e("Settings", "Locale = " + Locale.getDefault().toLanguageTag());
         btnUpdateAcc.setOnClickListener(new Button.OnClickListener(){
             public void onClick(View v){
                 AlertDialog.Builder builder = new AlertDialog.Builder(settings.this);
@@ -98,12 +97,12 @@ public class settings extends AppCompatActivity
         });
         btnChi.setOnClickListener(new Button.OnClickListener(){
             public void onClick(View v){
-                //setLocale("zh-Hant-HK");
+                setLocale("zh-Hant-HK");
             }
         });
         btnEng.setOnClickListener(new Button.OnClickListener(){
             public void onClick(View v){
-                //setLocale("en");
+                setLocale("en");
             }
         });
         btnLogout.setOnClickListener(new Button.OnClickListener(){
@@ -152,6 +151,7 @@ public class settings extends AppCompatActivity
             startActivity(intent);
         }else if (id == R.id.converter) {
             Intent intent = new Intent(this,converter.class);
+            intent.putExtra("userid",userid);
             startActivity(intent);
         }else if (id == R.id.settings) {
             Intent intent = new Intent(this,settings.class);
@@ -160,9 +160,11 @@ public class settings extends AppCompatActivity
             finish();
         }else if (id == R.id.about) {
             Intent intent = new Intent(this,about.class);
+            intent.putExtra("userid",userid);
             startActivity(intent);
         }else if (id == R.id.privacy) {
             Intent intent = new Intent(this,privacy.class);
+            intent.putExtra("userid",userid);
             startActivity(intent);
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

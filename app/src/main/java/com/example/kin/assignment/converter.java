@@ -3,8 +3,6 @@ package com.example.kin.assignment;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -32,7 +30,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -153,6 +150,7 @@ public class converter extends AppCompatActivity
             startActivity(intent);
         }else if (id == R.id.converter) {
             Intent intent = new Intent(this,converter.class);
+            intent.putExtra("userid",userid);
             startActivity(intent);
         }else if (id == R.id.settings) {
             Intent intent = new Intent(this,settings.class);
@@ -161,9 +159,11 @@ public class converter extends AppCompatActivity
             finish();
         }else if (id == R.id.about) {
             Intent intent = new Intent(this,about.class);
+            intent.putExtra("userid",userid);
             startActivity(intent);
         }else if (id == R.id.privacy) {
             Intent intent = new Intent(this,privacy.class);
+            intent.putExtra("userid",userid);
             startActivity(intent);
         }
 
