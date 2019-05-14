@@ -1,3 +1,5 @@
+//An activity for user change some settings of the system
+
 package com.example.kin.assignment;
 
 import android.app.AlertDialog;
@@ -37,6 +39,10 @@ import java.util.Locale;
 
 public class settings extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+    String userid;  //store login user id
+    public sqlData SD = null;
+
+    //initial activity elements
     EditText etUserName;
     EditText etPassword;
     Button btnUpdateAcc;
@@ -44,28 +50,30 @@ public class settings extends AppCompatActivity
     Button btnEng;
     Button btnLogout;
 
-    String userid;
-    public sqlData SD = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        //create the navigation drawer interface
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         SD = new sqlData(this);
+
+        //indentify the login user
         Intent intent = getIntent();
         userid = intent.getStringExtra("userid");
 
+        //define activity elements
         etUserName = findViewById(R.id.etUserName);
         etPassword = findViewById(R.id.etPassword);
         btnUpdateAcc = findViewById(R.id.btnUpdateAcc);
@@ -73,6 +81,7 @@ public class settings extends AppCompatActivity
         btnEng = findViewById(R.id.btnEng);
         btnLogout = findViewById(R.id.btnLogout);
 
+        //click update button
         btnUpdateAcc.setOnClickListener(new Button.OnClickListener(){
             public void onClick(View v){
                 AlertDialog.Builder builder = new AlertDialog.Builder(settings.this);
@@ -81,12 +90,12 @@ public class settings extends AppCompatActivity
                 // Set up the buttons
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
+                    public void onClick(DialogInterface dialog, int which) {    //Click OK
                         Log.e("click ok in dialog",etPassword.getText().toString()+" , "+etUserName.getText().toString());
                         update(userid,etPassword.getText().toString(),etUserName.getText().toString());
                     }
                 });
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {    //Click Cancel
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();
@@ -95,16 +104,18 @@ public class settings extends AppCompatActivity
                 builder.show();
             }
         });
-        btnChi.setOnClickListener(new Button.OnClickListener(){
+        btnChi.setOnClickListener(new Button.OnClickListener(){     //Click chi button
             public void onClick(View v){
                 setLocale("zh-Hant-HK");
             }
         });
+        //Click eng button
         btnEng.setOnClickListener(new Button.OnClickListener(){
             public void onClick(View v){
                 setLocale("en");
             }
         });
+        //Click logout button
         btnLogout.setOnClickListener(new Button.OnClickListener(){
             public void onClick(View v){
                 Intent intent = new Intent(getBaseContext(),login.class);
@@ -112,29 +123,24 @@ public class settings extends AppCompatActivity
                 finish();
             }
         });
-        getUser(userid);
+        getUser(userid);    //put the login user details to the activity elements
     }
     @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+    public void onBackPressed() {   //press back button
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
         }
     }
-
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
+    public boolean onCreateOptionsMenu(Menu menu) {    // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.settings, menu);
         return true;
     }
-
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
+    public boolean onNavigationItemSelected(MenuItem item) {     // Handle navigation view item clicks here.
         int id = item.getItemId();
 
         if (id == R.id.homepage) {
@@ -167,11 +173,11 @@ public class settings extends AppCompatActivity
             intent.putExtra("userid",userid);
             startActivity(intent);
         }
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-    public void setLocale(String lang) {
+    public void setLocale(String lang) {       //set up the language
         Locale myLocale = new Locale(lang);
         Resources res = getResources();
         DisplayMetrics dm = res.getDisplayMetrics();
@@ -182,36 +188,13 @@ public class settings extends AppCompatActivity
         startActivity(refresh);
         finish();
     }
-    private void add(String userid,String password,String username) {
-        SQLiteDatabase db = SD.getWritableDatabase();
-        db.execSQL("insert into user ('userid','password','username') values ('"+userid+"','"+password+"','"+username+"')");
-        db.close();
-    }
-    private void update(String userid,String password,String username){
+    private void update(String userid,String password,String username){     //update user details
         SQLiteDatabase db = SD.getWritableDatabase();
         String sql = "update user set password='"+password+"', username='"+username+"' where userid='"+userid+"'";
         db.execSQL(sql);
         db.close();
     }
-    private void displayToLog(){
-        SQLiteDatabase db = SD.getWritableDatabase();
-        Cursor cursor = db.query("user", new String[]{"userid", "password","username"}, null, null, null, null, null);
-        cursor.moveToFirst();
-        String str="";
-
-        for (int i = 0; i < cursor.getCount(); i++) {
-            str = str +i+":"+ cursor.getString(0) +","+cursor.getString(1)+","+cursor.getString(2)+";";
-            cursor.moveToNext();
-        }
-        Log.e("DB data:",str);
-        db.close();
-    }
-    private void deleteAll(){
-        SQLiteDatabase db = SD.getWritableDatabase();
-        db.execSQL("delete from user");
-        db.close();
-    }
-    private void getUser(String userid){
+    private void getUser(String userid){        //get user name and password
         SQLiteDatabase db = SD.getWritableDatabase();
         Cursor cursor = db.rawQuery("select password,username from user where userid='"+userid+"'",null);
         while(cursor.moveToNext()){

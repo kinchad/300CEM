@@ -1,3 +1,5 @@
+//A java class to connect SQLite database and create table
+
 package com.example.kin.assignment;
 
 import android.content.Context;
@@ -13,19 +15,12 @@ public class sqlData extends SQLiteOpenHelper {
         super(context,DB, null, VS);
     }
     @Override
-    public void onCreate(SQLiteDatabase db) {
-        Log.e("sqlData: ","creating table...  A");
-
+    public void onCreate(SQLiteDatabase db) {   //create table
         String SQL="create table if not exists user(userid varchar(50) PRIMARY KEY,password varchar(50), username varchar(50))";
         db.execSQL(SQL);
         String SQL2="create table if not exists favour(userid varchar(50),currencyName varchar(50),remarks varchar(255))";
         db.execSQL(SQL2);
-
-        Log.e("sqlData: ","creating table...  B");
     }
     @Override
-    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-        //String SQL="DROP TABLE"+TB;
-        //sqLiteDatabase.execSQL(SQL);
-    }
+    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {    }
 }

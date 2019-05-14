@@ -48,40 +48,43 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class recommend extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-    private  static final String TAG="recommend.java";
+    private String userid;
+    private static final String TAG="recommend.java";
     private FusedLocationProviderClient fusedLocationClient;
     private int locationRequestCode = 1000;
     private double wayLatitude = 0.0, wayLongitude = 0.0;
     private String recommendCur="CNY";
-    String responseString;
-    JSONArray jsonArray;
-    ArrayList<String> stringArray = new ArrayList<String>();
+
+    //parameters  used in http request client
+    private String responseString;
+    private JSONArray jsonArray;
+    private ArrayList<String> stringArray = new ArrayList<String>();
     private ListView lvCurrency;
-    private String userid;
 
-    Geocoder geocoder;
-    List<Address> addresses;
+    private Geocoder geocoder;
+    private List<Address> addresses;
 
-    TextView tvLocation;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recommend);
 
-        Intent intent = getIntent();
-        userid = intent.getStringExtra("userid");
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        //create the navigation drawer interface
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        //indentify the login user
+        Intent intent = getIntent();
+        userid = intent.getStringExtra("userid");
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
@@ -94,80 +97,60 @@ public class recommend extends AppCompatActivity
         fusedLocationClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
             @Override
             public void onSuccess(Location location) {
-            // Got last known location. In some rare situations this can be null.
-                if (location != null) {
-                    wayLatitude = location.getLatitude();
-                    wayLongitude = location.getLongitude();
-                    Log.d(TAG,"inside function:"+String.valueOf(wayLongitude));
+            if (location != null) {      // Got last known location. In some rare situations this can be null.
+                wayLatitude = location.getLatitude();
+                wayLongitude = location.getLongitude();
 
-                    geocoder = new Geocoder(recommend.this, Locale.TRADITIONAL_CHINESE);
-                    try {
-                        addresses = geocoder.getFromLocation(wayLatitude, wayLongitude, 1);
-                        String address = addresses.get(0).getAddressLine(0);
-                        String country = addresses.get(0).getCountryName();
-                        String area = addresses.get(0).getAdminArea();
-                        String locality = addresses.get(0).getLocality();
-                        String street = addresses.get(0).getThoroughfare();
-                        String streetNumber = addresses.get(0).getFeatureName();
-                        String postalCode = addresses.get(0).getPostalCode();
+                geocoder = new Geocoder(recommend.this, Locale.TRADITIONAL_CHINESE);
+                try {   //check the user location, recommend the related currency
+                    addresses = geocoder.getFromLocation(wayLatitude, wayLongitude, 1);
+                    String country = addresses.get(0).getCountryName();
 
-                        //tvLocation.setText(String.valueOf(wayLatitude)+String.valueOf(wayLongitude));
-                        Log.e("Country",country);
-                        if(country.equals("美國")){
-                            recommendCur = "USD";
-                        }else if(country.equals("中國") || country.equals("香港")){
-                            recommendCur = "CNY";
-                        }else if(country.equals("日本")){
-                            recommendCur = "JPY";
-                        }
-
-                        new httpClient().execute();
-                        lvCurrency = findViewById(R.id.lvCurrency);
-
-                        lvCurrency.setOnItemClickListener(
-                                new AdapterView.OnItemClickListener() {
-                                    @Override
-                                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                        Toast.makeText(getBaseContext(), stringArray.get(position)+" Item clicked!", Toast.LENGTH_LONG).show();
-                                        Intent intent = new Intent(getBaseContext(),currencyDetail.class);
-                                        intent.putExtra("currencyName",stringArray.get(position));
-                                        intent.putExtra("userid",userid);
-                                        startActivity(intent);
-                                    }
-                                }
-                        );
-                    }catch (IOException e){
-                        e.printStackTrace();
+                    if(country.equals("美國")){
+                        recommendCur = "USD";
+                    }else if(country.equals("中國") || country.equals("香港")){
+                        recommendCur = "CNY";
+                    }else if(country.equals("日本")){
+                        recommendCur = "JPY";
                     }
+
+                    new httpClient().execute();    //make http request to API
+                    lvCurrency = findViewById(R.id.lvCurrency);
+
+                    lvCurrency.setOnItemClickListener(
+                            new AdapterView.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                    Intent intent = new Intent(getBaseContext(),currencyDetail.class);
+                                    intent.putExtra("currencyName",stringArray.get(position));
+                                    intent.putExtra("userid",userid);
+                                    startActivity(intent);
+                                }
+                            }
+                    );
+                }catch (IOException e){
+                    Log.e("Connection fail:",e.toString());     //display exception in logcat
                 }
             }
+            }
         });
-
-
-
     }
-
     @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+    public void onBackPressed() {      //press back button
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
         }
     }
-
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
+    public boolean onCreateOptionsMenu(Menu menu) {      // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.recommend, menu);
         return true;
     }
-
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
+    public boolean onNavigationItemSelected(MenuItem item) {     // Handle navigation view item clicks here.
         int id = item.getItemId();
 
         if (id == R.id.homepage) {
@@ -200,8 +183,7 @@ public class recommend extends AppCompatActivity
             intent.putExtra("userid",userid);
             startActivity(intent);
         }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
@@ -241,41 +223,30 @@ public class recommend extends AppCompatActivity
                     // get the string from website
                     responseString = stringBuffer.toString();
 
-                    runOnUiThread(new Runnable() {
-                        public void run() {
-                            try{
-                                jsonArray = new JSONArray(responseString);
-                                //Log.e("myLog",jsonArray.toString());
+                    try{
+                        jsonArray = new JSONArray(responseString);
 
-                                for(int i=0; i < jsonArray.length(); i++) {
-                                    JSONObject jsonobject = jsonArray.getJSONObject(i);
-                                    String name = jsonobject.getString("name");
-                                    stringArray.add(name);
-
-                                    for(String str: stringArray){
-                                        //Log.e("Currency Pairs:",str);
-                                    }
-                                }
-                            }catch (Throwable t){
-                                Log.e("Exception t catch",t.toString());
-                            }
+                        for(int i=0; i < jsonArray.length(); i++) {
+                            JSONObject jsonobject = jsonArray.getJSONObject(i);
+                            String name = jsonobject.getString("name");
+                            stringArray.add(name);
                         }
-                    });
+                    }catch (Throwable t){
+                        Log.e("Exception catch",t.toString());  //display error log to logcat
+                    }
                 }
             } catch (IOException e) {
-                Log.e("Connection fail:",e.toString());
-                e.printStackTrace();
+                Log.e("Connection fail:",e.toString()); //display exception in logcat
             }
             finally {
                 if (connection != null) {                    connection.disconnect();                }
             }
             return stringArray;
         }
-        //return to UI thread
-        protected void onPostExecute(ArrayList<String> arrayList){
+        protected void onPostExecute(ArrayList<String> arrayList){  //return to UI thread
             super.onPostExecute(arrayList);
             ArrayAdapter adapter = new ArrayAdapter(getBaseContext(),android.R.layout.simple_list_item_1,arrayList);
-            lvCurrency.setAdapter(adapter);
+            lvCurrency.setAdapter(adapter);     //set up the favour currency list
         }
     }
 }

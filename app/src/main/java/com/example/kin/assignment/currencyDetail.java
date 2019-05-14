@@ -1,3 +1,8 @@
+/*
+An activity to display the prediction results of each exchange currency pairs
+All results are get from an custom API
+ */
+
 package com.example.kin.assignment;
 
 import android.app.AlertDialog;
@@ -8,52 +13,47 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.InputType;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
 
 import javax.net.ssl.HttpsURLConnection;
 
 public class currencyDetail extends AppCompatActivity {
-    private String userid;
+    private String userid;    //store login user id
+    private String currencyName;    //store clicked currency name
 
-    TextView tvCurrencyName;
-    TextView tv7dayAlgorithm1;
-    TextView tv7dayBid1;
-    TextView tv7dayAsk1;
-    TextView tv1monthAlgorithm1;
-    TextView tv1monthBid1;
-    TextView tv1monthAsk1;
-    TextView tv1yearAlgorithm1;
-    TextView tv1yearBid1;
-    TextView tv1yearAsk1;
+    //initial all activity elements
+    private TextView tvCurrencyName;
+    private TextView tv7dayAlgorithm1;
+    private TextView tv7dayBid1;
+    private TextView tv7dayAsk1;
+    private TextView tv1monthAlgorithm1;
+    private TextView tv1monthBid1;
+    private TextView tv1monthAsk1;
+    private TextView tv1yearAlgorithm1;
+    private TextView tv1yearBid1;
+    private TextView tv1yearAsk1;
+    private ImageButton btnFavour;
 
-    ImageButton btnFavour;
+    //parameters  used in http request client
+    private String responseString;
+    private JSONArray jsonArray;
+    private JSONObject jsonobject;
 
-    String responseString;
-    JSONArray jsonArray;
-    JSONObject jsonobject;
-    String currencyName;
-    String remarks;
-
-    public sqlData SD = null;
+    private String remarks;     //initial for insert to SQLite
+    public sqlData SD = null;   //initial SQLite database
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,9 +62,10 @@ public class currencyDetail extends AppCompatActivity {
         SD = new sqlData(this);
 
         Intent intent = getIntent();
-        userid = intent.getStringExtra("userid");
-        currencyName = intent.getStringExtra("currencyName");
+        userid = intent.getStringExtra("userid");   //indentify the login user
+        currencyName = intent.getStringExtra("currencyName");   //get the clicked currency
 
+        //define all elements
         btnFavour = findViewById(R.id.btnFavour);
         tv7dayAlgorithm1 = findViewById(R.id.tv7dayAlgorithm1);
         tv7dayBid1 = findViewById(R.id.tv7dayBid1);
@@ -78,30 +79,29 @@ public class currencyDetail extends AppCompatActivity {
         tvCurrencyName = findViewById(R.id.tvCurrencyName);
         tvCurrencyName.setText(currencyName);
 
+        //make http requests with different parameters
         new httpClient().execute("7day");
         new httpClient().execute("1month");
         new httpClient().execute("1year");
 
-        displayToLog();
-
+        //add a currency pairs to favourite list
         btnFavour.setOnClickListener(new Button.OnClickListener(){
             public void onClick(View v){
+                //create dialog box for user input remarks
                 AlertDialog.Builder builder = new AlertDialog.Builder(currencyDetail.this);
                 builder.setTitle("Add your remarks for this currency pairs:");
-
-                final EditText input = new EditText(currencyDetail.this);   // Set up the input
+                final EditText input = new EditText(currencyDetail.this);   // Set up the input box
                 builder.setView(input);
 
-                // Set up the buttons
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                // Set up the dialog buttons
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {  //click OK
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         remarks = input.getText().toString();
-                        add(userid,currencyName,remarks);
-                        displayToLog();
+                        add(userid,currencyName,remarks);       //add the remarks to SQLite
                     }
                 });
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() { //click Cancel
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();
@@ -111,14 +111,14 @@ public class currencyDetail extends AppCompatActivity {
             }
         });
     }
-    public class returnString{
+    public class returnString{  //return object storing two strings
         public String responseString;
         public String params;
     }
     class httpClient extends AsyncTask<String, Void, returnString> {
         protected returnString doInBackground(String... params) {
-            Log.e("httpClient:","Execute with parameter: "+params[0]);
             String urlString = "";
+            //make http request URL depends on the params
             if(params[0].equals("7day")) {
                 urlString = "http://10.112.160.105:7777/sevenDayPredict?name=" + currencyName + "&algorithm=LinearRegression";
             }else if(params[0].equals("1month")) {
@@ -129,11 +129,9 @@ public class currencyDetail extends AppCompatActivity {
             HttpURLConnection connection = null;
             try {
                 URL url = new URL(urlString);       // create URL & connection
-
                 connection = (HttpURLConnection) url.openConnection();
                 connection.setReadTimeout(1500);        // set request timeout
                 connection.setConnectTimeout(1500);
-
                 // simulate Chrome's user agent, mobile browser may have compatible problems
                 connection.addRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.71 Safari/537.36");
                 connection.setInstanceFollowRedirects(true);    // set auto-redirect
@@ -152,15 +150,15 @@ public class currencyDetail extends AppCompatActivity {
                     bufferedReader.close();
                     inputStream.close();
 
+                    // get the string from website
                     responseString = stringBuffer.toString();
-                    Log.e("currencyDetail.java:",responseString);
                 }
             } catch (IOException e) {
-                Log.e("Connection fail:",e.toString());
-                e.printStackTrace();
+                Log.e("Connection fail:",e.toString());     //display exception in logcat
             }finally {
                 if (connection != null) {                    connection.disconnect();                }
             }
+            //create the return object
             returnString rs = new returnString();
             rs.responseString = responseString;
             rs.params = params[0];
@@ -168,14 +166,13 @@ public class currencyDetail extends AppCompatActivity {
         }
         protected void onPostExecute(returnString rs){      //return to UI thread
             super.onPostExecute(rs);
-
             try{
                 jsonArray = new JSONArray(rs.responseString);
 
+                //display the prediction results depends on the params
                 if(rs.params.equals("7day")){
                     for(int i=0; i < jsonArray.length(); i++) {
                         jsonobject = jsonArray.getJSONObject(i);
-                        String name = jsonobject.getString("name");
                         String ask = jsonobject.getString("ask");
                         String bid = jsonobject.getString("bid");
                         String algorithm = jsonobject.getString("algorithm");
@@ -187,7 +184,6 @@ public class currencyDetail extends AppCompatActivity {
                 }else if(rs.params.equals("1month")) {
                     for (int i = 0; i < jsonArray.length(); i++) {
                         jsonobject = jsonArray.getJSONObject(i);
-                        String name = jsonobject.getString("name");
                         String ask = jsonobject.getString("ask");
                         String bid = jsonobject.getString("bid");
                         String algorithm = jsonobject.getString("algorithm");
@@ -199,7 +195,6 @@ public class currencyDetail extends AppCompatActivity {
                 }else{
                     for (int i = 0; i < jsonArray.length(); i++) {
                         jsonobject = jsonArray.getJSONObject(i);
-                        String name = jsonobject.getString("name");
                         String ask = jsonobject.getString("ask");
                         String bid = jsonobject.getString("bid");
                         String algorithm = jsonobject.getString("algorithm");
@@ -210,41 +205,13 @@ public class currencyDetail extends AppCompatActivity {
                     }
                 }
             }catch (Throwable t){
-                Log.e("myLog","catch error");
+                Log.e("Error Log","catch error");   //display error log in logcat
             }
         }
     }
-    private void add(String userid,String currencyName,String remarks) {
+    private void add(String userid,String currencyName,String remarks) {    //insert remarks to table "favour"
         SQLiteDatabase db = SD.getWritableDatabase();
         db.execSQL("insert into favour ('userid','currencyName','remarks') values ('"+userid+"','"+currencyName+"','"+remarks+"')");
-        db.close();
-    }
-    private void update(String userid,String password){
-        SQLiteDatabase db = SD.getWritableDatabase();
-        db.execSQL("update user set password='"+password+"' where userid='"+userid+"'");
-        db.close();
-    }
-    private void delete(String userid){
-        SQLiteDatabase db = SD.getWritableDatabase();
-        db.execSQL("delete from favour WHERE userid = '"+userid+"'");
-        db.close();
-    }
-    private void displayToLog(){
-        SQLiteDatabase db = SD.getWritableDatabase();
-        Cursor cursor = db.query("favour", new String[]{"userid", "currencyName","remarks"}, null, null, null, null, null);
-        cursor.moveToFirst();
-        String str="";
-
-        for (int i = 0; i < cursor.getCount(); i++) {
-            str = str +i+":"+ cursor.getString(0) +","+cursor.getString(1)+","+cursor.getString(2)+";";
-            cursor.moveToNext();
-        }
-        Log.e("DB data:",str);
-        db.close();
-    }
-    private void deleteAll(){
-        SQLiteDatabase db = SD.getWritableDatabase();
-        db.execSQL("delete from user");
         db.close();
     }
 }

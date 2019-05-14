@@ -1,3 +1,5 @@
+//An activity to calculate the result for exchanging different currency pairs
+
 package com.example.kin.assignment;
 
 import android.content.Intent;
@@ -20,97 +22,90 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-
 import javax.net.ssl.HttpsURLConnection;
 
 public class converter extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-    Spinner baseSpinner;
-    Spinner targetSpinner;
-    EditText etBase;
-    Button btnConvert;
-    TextView tvTarget;
+    private String userid;      //store login user id
+    private Spinner baseSpinner;    //drop down list of base currency name
+    private Spinner targetSpinner;  //drop down list of target currency name
+    private EditText etBase;        //input box for base currency amount
+    private TextView tvTarget;      //disply result
+    private Button btnConvert;     //convert base to target currency amount
 
-    String baseCurrency;
-    String targetCurrency;
-
-    String responseString;
-    JSONArray jsonArray;
-
-    String userid;
+    //parameters  used in http request client
+    private String baseCurrency;
+    private String targetCurrency;
+    private String responseString;
+    private JSONArray jsonArray;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_converter);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        //create the navigation drawer interface
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        //indentify the login user
         Intent intent = getIntent();
         userid = intent.getStringExtra("userid");
 
+        //define activity elements
         baseSpinner = findViewById(R.id.baseSpinner);
         targetSpinner = findViewById(R.id.targetSpinner);
         etBase = findViewById(R.id.etBase);
-        btnConvert = findViewById(R.id.btnConvert);
         tvTarget = findViewById(R.id.tvTarget);
+        btnConvert = findViewById(R.id.btnConvert);
 
-        etBase.setText("0");
+        etBase.setText("0");    //default base currency amount set to 0
+
+        //define both list content , and set up adapter
         final String[] baseCurrencyList = new String[]{"EUR","BTC","GBP","USD","AUD","NZD","CHF","XAU","XAG"};
-        String[] targetCurrencyList = new String[]{"USD","JPY","CHF","CAD","CNY","SGD","GBP","CNY","AUD","NZD"};
-
+        final String[] targetCurrencyList = new String[]{"USD","JPY","CHF","CAD","CNY","SGD","GBP","CNY","AUD","NZD"};
         ArrayAdapter<String> baseAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, baseCurrencyList);
         ArrayAdapter<String> targetAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, targetCurrencyList);
-
         baseSpinner.setAdapter(baseAdapter);
         targetSpinner.setAdapter(targetAdapter);
 
         baseSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                //store selected base currency name
                 baseCurrency = baseSpinner.getItemAtPosition(position).toString();
-                Log.e("converter",baseCurrency);
             }
             @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-                Log.e("converter","Nothing selected at base spinner.");
-            }
+            public void onNothingSelected(AdapterView<?> parentView) {}
         });
         targetSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                //store selected target currency name
                 targetCurrency = targetSpinner.getItemAtPosition(position).toString();
-                Log.e("converter",targetCurrency);
             }
             @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-                Log.e("converter","Nothing selected at target spinner.");
-            }
+            public void onNothingSelected(AdapterView<?> parentView) {}
         });
         btnConvert.setOnClickListener(new Button.OnClickListener(){
             public void onClick(View v){
-                if(baseCurrency.equals(targetCurrency)){
+                if(baseCurrency.equals(targetCurrency)){    //check if the selected currencies are invalid
                     Toast.makeText(getBaseContext(),"Base and Target currency cannot be the same.",Toast.LENGTH_LONG).show();
-                }else{
+                }else{      //valid selection, make http request to currency API with parameter base currency amount
                     Double base = Double.parseDouble(etBase.getText().toString());
                     new httpClient().execute(base);
                 }
@@ -118,8 +113,8 @@ public class converter extends AppCompatActivity
         });
     }
     @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+    public void onBackPressed() {   //press back button
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -132,8 +127,7 @@ public class converter extends AppCompatActivity
         return true;
     }
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
+    public boolean onNavigationItemSelected(MenuItem item) {    // Handle navigation view item clicks here.
         int id = item.getItemId();
 
         if (id == R.id.homepage) {
@@ -166,41 +160,32 @@ public class converter extends AppCompatActivity
             intent.putExtra("userid",userid);
             startActivity(intent);
         }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-    class httpClient extends AsyncTask<Double, Void, Double> {
+    class httpClient extends AsyncTask<Double, Void, Double> {      //make request to currency API server
         protected Double doInBackground(Double... params) {
-            final Double baseValue = params[0];
-            String urlString = "http://10.112.160.105:7777/getCurrencyRates?base="+baseCurrency+"&target="+targetCurrency;
+            final Double baseValue = params[0];     //for counting the target currency result
+            String urlString = "http://10.112.160.105:7777/getCurrencyRates?base="+baseCurrency+"&target="+targetCurrency;      //request URL
             HttpURLConnection connection = null;
             try {
-                // create URL & connection
                 URL url = new URL(urlString);
-                connection = (HttpURLConnection) url.openConnection();
-                // set request timeout
+                connection = (HttpURLConnection) url.openConnection();       // create URL & connection
                 connection.setReadTimeout(1500);
-                connection.setConnectTimeout(1500);
+                connection.setConnectTimeout(1500);     // set timeout
                 // simulate Chrome's user agent, mobile browser may have compatible problems
                 connection.addRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.71 Safari/537.36");
-                // set auto-redirect
-                connection.setInstanceFollowRedirects(true);
+                connection.setInstanceFollowRedirects(true);    // set auto-redirect
 
-                //return 200 -> request successful
-                if( connection.getResponseCode() == HttpsURLConnection.HTTP_OK ){
-                    // read the website
-                    InputStream inputStream = connection.getInputStream();
+                if( connection.getResponseCode() == HttpsURLConnection.HTTP_OK ){   //return 200 -> request successful
+                    InputStream inputStream = connection.getInputStream();      //read the website
                     BufferedReader bufferedReader  = new BufferedReader( new InputStreamReader(inputStream) );
-
                     String tempStr;
                     StringBuffer stringBuffer = new StringBuffer();
-
                     while( ( tempStr = bufferedReader.readLine() ) != null ) {
                         stringBuffer.append( tempStr );
                     }
-
                     bufferedReader.close();
                     inputStream.close();
 
@@ -208,41 +193,35 @@ public class converter extends AppCompatActivity
                     responseString = stringBuffer.toString();
                     try{
                         Double bid=0.0;
-                        jsonArray = new JSONArray(responseString);
+                        jsonArray = new JSONArray(responseString);      //convert string to JSON array
 
                         for(int i=0; i < jsonArray.length(); i++) {
-                            JSONObject jsonobject = jsonArray.getJSONObject(i);
-                            bid = jsonobject.getDouble("bid");
-                            //return ask/bid;
-                            Log.e("Bid value",bid.toString());
-                            Log.e("Params value",baseValue.toString());
+                            JSONObject jsonobject = jsonArray.getJSONObject(i);     //get JSON object from JSON array
+                            bid = jsonobject.getDouble("bid");      //get the bid amount
                         }
-                        return bid*baseValue;
+                        return bid*baseValue;       //calculate and return the result
                     }catch (Throwable t){
-                        Log.e("myLog",t.toString());
+                        Log.e("Error Log",t.toString());   //display the error in logcat
                     }
                 }
             } catch (IOException e) {
-                Log.e("Connection fail:",e.toString());
-                e.printStackTrace();
+                Log.e("Connection fail:",e.toString());     //display exception in logcat
             }
             finally {
                 if (connection != null) {     connection.disconnect();      }
             }
-            return -1.0;
+            return -1.0;       //return -1.0 with no related bid found
         }
-        //return to UI thread
-        protected void onPostExecute(Double result){
+        protected void onPostExecute(Double result){    //return to UI thread
             super.onPostExecute(result);
-            if(result==-1.0){
+            if(result==-1.0){       //No result
                 Toast.makeText(getBaseContext(),"No such currency pairs rate records in this system.",Toast.LENGTH_LONG).show();
-            }else if(result==0.0){
+            }else if(result==0.0){  //base amount is 0
                 Toast.makeText(getBaseContext(),"Enter the base currency amount.",Toast.LENGTH_LONG).show();
                 tvTarget.setText(result.toString());
-            }else{
+            }else{      //return the result to target textview
                 tvTarget.setText(result.toString());
             }
-
         }
     }
 }

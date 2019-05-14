@@ -34,61 +34,59 @@ import java.util.Map;
 
 public class favour extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-    public sqlData SD = null;
+    private String userid;  //store login user id
+    private sqlData SD = null;  //initial SQLite database
+
+    //initial activity elements
     private ListView lvCurrency;
-    public List<HashMap<String , String>> list;
-    public ListAdapter adapter;
-    private String userid;
+    private List<HashMap<String , String>> list;
+    private ListAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_favour);
 
-        SD = new sqlData(this);
-        list = new ArrayList<>();
-
-        Intent intent = getIntent();
-        userid = intent.getStringExtra("userid");
-
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        //create the navigation drawer interface
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        //indentify the login user
+        Intent intent = getIntent();
+        userid = intent.getStringExtra("userid");
+
+        //create database connection, define activity elements
+        SD = new sqlData(this);
+        list = new ArrayList<>();
         lvCurrency = findViewById(R.id.lvCurrency);
 
+        //get the favour list from SQLite database
         getAll();
     }
-
     @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+    public void onBackPressed() {      //press back button
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
         }
     }
-
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
+    public boolean onCreateOptionsMenu(Menu menu) {    // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.favour, menu);
         return true;
     }
-
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
+    public boolean onNavigationItemSelected(MenuItem item) {    // Handle navigation view item clicks here.
         int id = item.getItemId();
 
         if (id == R.id.homepage) {
@@ -122,39 +120,11 @@ public class favour extends AppCompatActivity
             startActivity(intent);
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-    private void add(String userid,String password,String username) {
-        SQLiteDatabase db = SD.getWritableDatabase();
-        db.execSQL("insert into favour ('userid','password','username') values ('"+userid+"','"+password+"','"+username+"')");
-        db.close();
-    }
-    private void update(String userid,String password){
-        SQLiteDatabase db = SD.getWritableDatabase();
-        db.execSQL("update user set password='"+password+"' where userid='"+userid+"'");
-        db.close();
-    }
-    private void delete(String currencyName,String remarks){
-        SQLiteDatabase db = SD.getWritableDatabase();
-        db.execSQL("delete from favour WHERE currencyName = '"+currencyName+"' and remarks='"+remarks+"'");
-        db.close();
-    }
-    private void displayToLog(){
-        SQLiteDatabase db = SD.getWritableDatabase();
-        Cursor cursor = db.query("user", new String[]{"userid", "password","username"}, null, null, null, null, null);
-        cursor.moveToFirst();
-        String str="";
-
-        for (int i = 0; i < cursor.getCount(); i++) {
-            str = str +i+":"+ cursor.getString(0) +","+cursor.getString(1)+","+cursor.getString(2)+";";
-            cursor.moveToNext();
-        }
-        Log.e("DB data:",str);
-        db.close();
-    }
-    public void getAll(){
+    public void getAll(){   //get all favourite currency from table "favour"
         SQLiteDatabase db = SD.getWritableDatabase();
         Cursor cursor = db.rawQuery("select * from favour",null);
         while(cursor.moveToNext()){
@@ -173,8 +143,8 @@ public class favour extends AppCompatActivity
         cursor.close();
         db.close();
 
+        //add the list to listView element
         adapter = new SimpleAdapter(this,list,android.R.layout.simple_list_item_2 ,new String[]{"currencyName" , "remarks"} ,new int[]{android.R.id.text1 , android.R.id.text2});
-        //ArrayAdapter adapter = new ArrayAdapter(getBaseContext(),android.R.layout.simple_list_item_1,stringArray);
         lvCurrency.setAdapter(adapter);
         lvCurrency.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -184,10 +154,5 @@ public class favour extends AppCompatActivity
                 ((BaseAdapter)adapter).notifyDataSetChanged();
             }
         });
-    }
-    private void deleteAll(){
-        SQLiteDatabase db = SD.getWritableDatabase();
-        db.execSQL("delete from user");
-        db.close();
     }
 }

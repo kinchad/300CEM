@@ -1,6 +1,7 @@
+//Login activity
+
 package com.example.kin.assignment;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -13,27 +14,27 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 public class login extends AppCompatActivity {
+    //initial activity elements
     private EditText etUserID;
     private EditText etPassword;
     private Button btnLogin;
     private Button btnRegister;
 
-    public sqlData SD = null;
+    private sqlData SD = null;  //initial SQLite database
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        //define all elements
         SD = new sqlData(this);
         etUserID = findViewById(R.id.etUserID);
         etPassword = findViewById(R.id.etPassword);
         btnLogin = findViewById(R.id.btnLogin);
         btnRegister = findViewById(R.id.btnRegister);
 
-        //deleteAll();
-        //displayToLog();
-
+        //click login button
         btnLogin.setOnClickListener(new Button.OnClickListener(){
             public void onClick(View v){
                 String userid = etUserID.getText().toString();
@@ -57,12 +58,12 @@ public class login extends AppCompatActivity {
             }
         });
     }
-    public boolean loginUser(String userid,String password){
+    public boolean loginUser(String userid,String password){    //authentication function for login
         SQLiteDatabase db = SD.getWritableDatabase();
         Cursor cursor = db.query("user", new String[]{"userid", "password","username"}, null, null, null, null, null);
         cursor.moveToFirst();
 
-        for (int i=0;i<cursor.getCount();i++){
+        for (int i=0;i<cursor.getCount();i++){  //check if userid and password exist in SQLite table "user"
             Log.e("DB user:",cursor.getString(0) +" / "+cursor.getString(1));
             if(userid.equals(cursor.getString(0)) && password.equals(cursor.getString(1))){
                 return true;
@@ -70,19 +71,6 @@ public class login extends AppCompatActivity {
             cursor.moveToNext();
         }
         return false;
-    }
-    private void displayToLog(){
-        SQLiteDatabase db = SD.getWritableDatabase();
-        Cursor cursor = db.query("user", new String[]{"userid", "password","username"}, null, null, null, null, null);
-        cursor.moveToFirst();
-        String str="";
-
-        for (int i = 0; i < cursor.getCount(); i++) {
-            str = str +i+":"+ cursor.getString(0) +","+cursor.getString(1)+","+cursor.getString(2)+";";
-            cursor.moveToNext();
-        }
-        Log.e("DB data:",str);
-        db.close();
     }
     private void deleteAll(){
         SQLiteDatabase db = SD.getWritableDatabase();

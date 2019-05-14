@@ -1,12 +1,13 @@
+/*
+This is the first page after user login the application.
+This activity show all currency get from API and allow user to search by name.
+ */
+
 package com.example.kin.assignment;
 
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -23,12 +24,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,52 +33,54 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import javax.net.ssl.HttpsURLConnection;
 
 public class homePage extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+    private String userid;      //store login user id
 
-    private String userid;
-    public ListView lvCurrency;
-    private String[] currencyRates;
+    //initial activity elements
     private EditText etSearch;
+    private ListView lvCurrency;
 
-    String responseString;
-    JSONArray jsonArray;
-    ArrayList<String> stringArray = new ArrayList<String>();
+    //parameters used in http request client
+    private String responseString;
+    private JSONArray jsonArray;
+    private ArrayList<String> stringArray = new ArrayList<String>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
 
-        Intent intent = getIntent();
-        userid = intent.getStringExtra("userid");
-
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        //create the navigation drawer interface
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        new httpClient().execute();
+        //indentify the login user
+        Intent intent = getIntent();
+        userid = intent.getStringExtra("userid");
 
+        //define activity elements
         lvCurrency = findViewById(R.id.lvCurrency);
         etSearch = findViewById(R.id.etSearch);
 
-        lvCurrency.setOnItemClickListener(
+        //make http request to currency API
+        new httpClient().execute();
+
+        lvCurrency.setOnItemClickListener(      //when user click on a list item
             new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    Toast.makeText(getBaseContext(), stringArray.get(position)+" Item clicked!", Toast.LENGTH_LONG).show();
                     Intent intent = new Intent(getBaseContext(),currencyDetail.class);
                     intent.putExtra("currencyName",stringArray.get(position));
                     intent.putExtra("userid",userid);
@@ -89,10 +88,10 @@ public class homePage extends AppCompatActivity
                 }
             }
         );
-        etSearch.addTextChangedListener(new TextWatcher() {
+        etSearch.addTextChangedListener(new TextWatcher() {     //when user input something in the textbox
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {     }
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if(!s.equals("") ) {
+                if(!s.equals("") ) {    //searching currency name from the list
                     searching(s.toString());
                 }
             }
@@ -100,8 +99,8 @@ public class homePage extends AppCompatActivity
         });
     }
     @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+    public void onBackPressed() {       //press back button
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -109,15 +108,12 @@ public class homePage extends AppCompatActivity
         }
     }
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
+    public boolean onCreateOptionsMenu(Menu menu) {     // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.home_page, menu);
         return true;
     }
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
+    public boolean onNavigationItemSelected(MenuItem item) {       // Handle navigation view item clicks here.
         int id = item.getItemId();
 
         if (id == R.id.homepage) {
@@ -150,7 +146,7 @@ public class homePage extends AppCompatActivity
             intent.putExtra("userid",userid);
             startActivity(intent);
         }
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
@@ -172,51 +168,34 @@ public class homePage extends AppCompatActivity
 
                 //return 200 -> request successful
                 if( connection.getResponseCode() == HttpsURLConnection.HTTP_OK ){
-                    // read the website
-                    InputStream inputStream = connection.getInputStream();
+                    InputStream inputStream = connection.getInputStream();      // read the website
                     BufferedReader bufferedReader  = new BufferedReader( new InputStreamReader(inputStream) );
 
                     String tempStr;
                     StringBuffer stringBuffer = new StringBuffer();
-
                     while( ( tempStr = bufferedReader.readLine() ) != null ) {
                         stringBuffer.append( tempStr );
                     }
-
                     bufferedReader.close();
                     inputStream.close();
 
                     // get the string from website
                     responseString = stringBuffer.toString();
 
-                   runOnUiThread(new Runnable() {
-                        public void run() {
-                            try{
-                                jsonArray = new JSONArray(responseString);
-                                //Log.e("myLog",jsonArray.toString());
+                    try{
+                        jsonArray = new JSONArray(responseString);
 
-                                for(int i=0; i < jsonArray.length(); i++) {
-                                    JSONObject jsonobject = jsonArray.getJSONObject(i);
-                                    String name = jsonobject.getString("name");
-                                    String ask = jsonobject.getString("ask");
-                                    String bid = jsonobject.getString("bid");
-                                    String time = jsonobject.getString("time");
-
-                                    stringArray.add(name);
-
-                                    for(String str: stringArray){
-                                        //Log.e("Currency Pairs:",str);
-                                    }
-                                }
-                            }catch (Throwable t){
-                                Log.e("myLog","catch error");
-                            }
+                        for(int i=0; i < jsonArray.length(); i++) {
+                            JSONObject jsonobject = jsonArray.getJSONObject(i);
+                            String name = jsonobject.getString("name");
+                            stringArray.add(name);
                         }
-                    });
+                    }catch (Throwable t){
+                        Log.e("Error Log","catch error");   //display error log to logcat
+                    }
                 }
             } catch (IOException e) {
-                Log.e("Connection fail:",e.toString());
-                e.printStackTrace();
+                Log.e("Connection fail:",e.toString());     //display exception in logcat
             }
             finally {
                 if (connection != null) {                    connection.disconnect();                }
@@ -230,13 +209,14 @@ public class homePage extends AppCompatActivity
             lvCurrency.setAdapter(adapter);
         }
     }
-    public void searching(String key){
+    public void searching(String key){      //searching through the key words
         ArrayList<String> searchArray = new ArrayList<String>();
         for(int i=0;i<stringArray.size();i++){
             if(stringArray.get(i).toLowerCase().contains(key.toLowerCase())){
-                searchArray.add(stringArray.get(i));
+                searchArray.add(stringArray.get(i));    //add the element to array that contains key word
             }
         }
+        //set the array to be new listView
         ArrayAdapter adapter = new ArrayAdapter(getBaseContext(),android.R.layout.simple_list_item_1,searchArray);
         lvCurrency.setAdapter(adapter);
     }
