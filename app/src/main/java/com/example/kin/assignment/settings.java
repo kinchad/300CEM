@@ -106,7 +106,7 @@ public class settings extends AppCompatActivity
         });
         btnChi.setOnClickListener(new Button.OnClickListener(){     //Click chi button
             public void onClick(View v){
-                setLocale("zh-Hant-HK");
+                setLocale("zh");
             }
         });
         //Click eng button
@@ -180,13 +180,25 @@ public class settings extends AppCompatActivity
     public void setLocale(String lang) {       //set up the language
         Locale myLocale = new Locale(lang);
         Resources res = getResources();
-        DisplayMetrics dm = res.getDisplayMetrics();
         Configuration conf = res.getConfiguration();
-        conf.locale = myLocale;
-        res.updateConfiguration(conf, dm);
+        DisplayMetrics dm = res.getDisplayMetrics();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1){
+            conf.setLocale(myLocale);
+        } else{
+            conf.locale=myLocale;
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
+            getApplicationContext().createConfigurationContext(conf);
+        } else {
+            res.updateConfiguration(conf,dm);
+        }
+
+        //conf.locale = myLocale;
+        //res.updateConfiguration(conf, dm);
         Intent refresh = new Intent(this, settings.class);
+        refresh.putExtra("userid",userid);
         startActivity(refresh);
-        finish();
     }
     private void update(String userid,String password,String username){     //update user details
         SQLiteDatabase db = SD.getWritableDatabase();

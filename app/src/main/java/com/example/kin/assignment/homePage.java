@@ -136,7 +136,6 @@ public class homePage extends AppCompatActivity
             Intent intent = new Intent(this,settings.class);
             intent.putExtra("userid",userid);
             startActivity(intent);
-            finish();
         }else if (id == R.id.about) {
             Intent intent = new Intent(this,about.class);
             intent.putExtra("userid",userid);

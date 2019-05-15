@@ -64,7 +64,6 @@ public class login extends AppCompatActivity {
         cursor.moveToFirst();
 
         for (int i=0;i<cursor.getCount();i++){  //check if userid and password exist in SQLite table "user"
-            Log.e("DB user:",cursor.getString(0) +" / "+cursor.getString(1));
             if(userid.equals(cursor.getString(0)) && password.equals(cursor.getString(1))){
                 return true;
             }
